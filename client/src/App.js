@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Game from './components/Game';
+// import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+// import Game from './components/Game';
 
 // SERVICES
 import userService from './services/userService';
