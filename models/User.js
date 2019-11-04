@@ -3,8 +3,10 @@ const {Schema} = mongoose;
 
 const userSchema = new Schema({
     name: String,
+    id: String,
     points: Number,
-    date: Date
+    date: Date,
+    picture: String
 })
 
 mongoose.model('users', userSchema);
