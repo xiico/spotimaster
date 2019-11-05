@@ -8,6 +8,6 @@ export default {
   get: async (id) => {
     console.log('user_service_id:',id);
     let res = await axios.get(`/api/user?id=${id}`);
-    return res.data || [];
+    return res.data;
   }
 }

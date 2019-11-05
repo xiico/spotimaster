@@ -1,41 +1,55 @@
-import React, { useState/*, useEffect*/ } from 'react';
+import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 
 import userService from './services/userService';
+import spotifyService from './services/spotifyService';
 // import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 // import Game from './components/Game';
 import Header from "./components/Header";
-import Login from "./components/Login";
-
+import Player from "./components/Player";
 function App(props) {
   const [user, setuser] = useState(null);
-  // useEffect(() => {
-  //   const result = queryString.parse(window.location.hash);
-  //   if (result.id) {
-  //     getUser(result.id);
-  //   }
-  // })
-  const result = queryString.parse(props.location.hash || props.location.search);
-  const getUser = async (id) => {
-    console.log("getUser: ", id);
-    let res = await userService.get(id);
-    setuser(res);
+  const [player, setplayer] = useState(null);
+  const [access_token, settoken] = useState(null);
+  useEffect(()=>{
+    if(!user){
+      if(window.localStorage.access_token){        
+        getSpotifyUser(window.localStorage.access_token).then(spotiUser => setuser(spotiUser));        
+        settoken(window.localStorage.access_token);        
+      }
+      else
+      {
+        const result = queryString.parse(props.location.hash || props.location.search);
+        let access_token = result.token || result['?token'];
+        if (access_token) {
+          window.localStorage.access_token = access_token;
+          getSpotifyUser(window.localStorage.access_token).then(spotiUser => setuser(spotiUser));          
+          settoken(access_token);        
+        }
+      }
+    }
+  });
+  const getSpotifyUser = async (token) => {
+    let user = await spotifyService.user(token);
+    return user;
   }
-  getUser(result.user || result['?user'])
-  console.log("user: ", user);
-
-  if (user) {
+  const renderPlayer = player => {
     return (
-      <div className="App">
-        <Header user={user} ></Header>
-      </div>
+      <Player token={access_token}></Player>
     );
-  } else {
-    return (
-      <div className="App">
-        <Login></Login>
-      </div>)
-  }
+  };
+  return (
+    <div className="App">
+      <Header user={user} ></Header>
+      <div className="player">
+        {user ? (
+          renderPlayer()
+        ) : (
+          <p>Loading player</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default App;
