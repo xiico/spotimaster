@@ -25,7 +25,14 @@
     margin: auto;
   }
 
-  
+  .counter{
+    width: 100%;
+    height: 40px;
+  }
+
+  .hidden {
+    display: none;
+  }
 
   @media all and (max-width: 1520px) {
     .cards_list {

@@ -59,9 +59,17 @@ export default function Player(props) {
           }
           if(tracklist && canplay) playTrack(tracklist.shift());
     });
-    const playTrack = (track) => {
+    const playTrack = async (track) => {
+      let recommendations = await getRecommendations(track.id);
+      if(!recommendations.tracks) {
+        let t = tracklist.shift();
+        recommendations = await getRecommendations(t.id);
+      }
       setcanplay(false);
       spotifyService.play(props.token, device, track.id);
+      recommendations.tracks.push(track);
+      recommendations.tracks.sort(function (a, b) { return 0.5 - Math.random() });
+      setoptions(recommendations);
     }
     const createTrackList = (trl) => {
       if(trl){
@@ -73,11 +81,12 @@ export default function Player(props) {
             track: t.name
           }
         });
+        trks.sort(function (a, b) { return 0.5 - Math.random() });
         settracklist(trks);
       }
     }
-    const getRecommendations = async () => {
-      return await spotifyService.recommendations(props.token,props.seed,props.user.country);
+    const getRecommendations = async (seed) => {
+      return await spotifyService.recommendations(props.token, seed, props.user.country);
     }
     const checkAnwser = (track) => {
 
@@ -87,16 +96,18 @@ export default function Player(props) {
         options 
         ?
           (<div className="cards_list">
-            {options.tracks.map(option => (
+            {options.tracks.map(option => {
+              console.log(option);
+              return (              
               <Card
                 id={option.id} 
                 key={option.id}
-                artist={option.artists.map(e => ` ${e.name}`).toString().trimStart()}
-                image={option.album.images.find(a => a.width == 300).url} 
-                track={option.name}
+                artist={ option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist }
+                image={ option.album ? option.album.images.find(a => a.width == 300).url : option.image} 
+                track={option.name || option.track}
                 onClick={() => spotifyService.play(props.token, device, option.id)}
               ></Card>
-            ))}
+            )})}
           </div>)
         :
         <div>Loading</div>
@@ -105,12 +116,11 @@ export default function Player(props) {
     const start = async () => {
       let trks = await spotifyService.tracks(props.token);
       createTrackList(trks);
-      let recommendations = await getRecommendations();
-      setoptions(recommendations);
       setstarted(true);
     }
     return (
         <div className="player_container">
+            <div className={"counter" + (!(tracklist || {}).length ? "hidden" : "")}>{`There are ${((tracklist || {}).length || 0)} left`}</div>
             {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
             {started ? renderCards() : (
               <button className="start start_button" onClick={() => start() } >Start</button>
@@ -120,6 +130,7 @@ export default function Player(props) {
                 <Card
                   artist={curtrack.artists.map(e => ` ${e.name}`).toString().trimStart()}
                   image={curtrack.album.images.find(a => a.width == 300).url} track={curtrack.name}
+                  onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} }
                 ></Card>
               </div>
             ) : <div></div>)}
