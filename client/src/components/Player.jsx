@@ -120,7 +120,7 @@ export default function Player(props) {
     }
     return (
         <div className="player_container">
-            <div className={"counter" + (!(tracklist || {}).length ? "hidden" : "")}>{`There are ${((tracklist || {}).length || 0)} left`}</div>
+            <div className={"counter" + (!(tracklist || {}).length ? " hidden" : "")}>{`There are ${((tracklist || {}).length || 0)} left`}</div>
             {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
             {started ? renderCards() : (
               <button className="start start_button" onClick={() => start() } >Start</button>
