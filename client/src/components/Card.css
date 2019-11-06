@@ -1,0 +1,70 @@
+ 
+  .card {
+    margin: 30px auto;
+    width: 180px;
+    height: 240px;
+    cursor: pointer;
+    transition: 0.4s;
+  }
+  
+  .card .card_image {
+    width: inherit;
+    height: inherit;
+    background-color: #222;
+  }
+  
+  .card .card_image img {
+    width: inherit;
+    object-fit: cover;
+  }
+  
+  .card .card_title {
+    text-align: left;
+    font-family: "Arial", sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    margin-top: -66px;
+    margin-left: 5px;
+  }
+  
+  .card_subtitle {
+    font-size: 11px;
+    color: #ccc;
+    margin-top: -15px;
+    font-weight: normal;
+    padding-top: 2px;
+  }
+  
+  .card:hover {
+    transform: scale(0.96, 0.96);
+    box-shadow: 5px 5px 10px 5px rgba(255,255,255,0.25), 
+      -5px -5px 10px 5px rgba(255,255,255,0.22);
+  }
+  
+  .title-white {
+    color: white;
+  }
+  
+  .title-black {
+    color: black;
+  }
+  
+  @media all and (max-width: 500px) {
+    .card_list {
+      /* On small screens, we are no longer using row direction but column */
+      flex-direction: column;
+    }
+    .card {
+      width: 120px;
+      height: 160px;
+      margin: 5px auto;
+    }
+    .card .card_title {
+      margin-top: -48px;
+      font-size: 11px;
+    }
+    .card_subtitle{
+      font-size: 9px;
+      padding-top: 5px;
+    }
+  }

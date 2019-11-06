@@ -6,7 +6,8 @@ const userSchema = new Schema({
     id: String,
     points: Number,
     date: Date,
-    picture: String
+    picture: String,
+    country: String
 })
 
 mongoose.model('users', userSchema);

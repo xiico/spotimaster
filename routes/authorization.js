@@ -65,8 +65,20 @@ module.exports = (app) => {
                 id: body.id,
                 points: 0,
                 date: new Date(),
-                picture: body.images[0].url
+                picture: body.images[0].url,
+                country: body.country
               });
+            } 
+            else
+            {
+              user = await User.updateOne(user,
+                {
+                  $set: {
+                    name: body.display_name,
+                    picture: body.images[0].url,
+                    country: body.country
+                  }
+                });
             }
             console.log("user", user);
             // we can also pass the token to the browser to make requests from there

@@ -35,7 +35,7 @@ function App(props) {
   }
   const renderPlayer = player => {
     return (
-      <Player token={access_token}></Player>
+      <Player token={access_token} user={user} seed={'29rTQRoLUMfWgVlXHQZ7bJ'} ></Player>
     );
   };
   return (

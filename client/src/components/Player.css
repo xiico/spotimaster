@@ -1,3 +1,43 @@
 .player div{
     color:white;
 }
+.player_container {
+    margin:auto;
+    z-index: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    height: 600px;
+  }
+
+  .cards_list {
+    margin:auto;
+    z-index: 0;
+    width: 60%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+
+  .start_button {
+    height: 40px;
+    margin: auto;
+  }
+
+  
+
+  @media all and (max-width: 1520px) {
+    .cards_list {
+      width: 80%;
+    }
+  }
+  
+  @media all and (max-width: 500px) {
+    .cards_list {
+      width: 100%;
+    }
+    .player_container{
+      height: 480px;
+    }
+  }
