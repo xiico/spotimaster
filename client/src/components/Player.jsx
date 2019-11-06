@@ -19,7 +19,7 @@ export default function Player(props) {
             script.onload = () => {
               let player;
               console.log('loaded:', window.onSpotifyWebPlaybackSDKReady);
-              const token = 'BQC9exSZMVvEGBxyuwAnOBPVInT8kNZaQXnYRdweGNILkMnbw4I2zvVDeChnlsMvbxuuG40DS7iLWnJ4Q7aEPxHKWQrjB4e2AaF0W8nmfi25P2kLOTDdLAZlW4lUIBjV4ZwGhkLguMtSvr-wQ6CYTLwgTZE3UCvAH5Q';
+              const token = props.token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
               player = new window.Spotify.Player({
                 name: 'Web Playback SDK Quick Start Player',
                 getOAuthToken: cb => { cb(token); }
