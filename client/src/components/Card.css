@@ -49,7 +49,7 @@
     color: black;
   }
   
-  @media all and (max-width: 500px) {
+  @media all and (max-width: 1200px) {
     .card_list {
       /* On small screens, we are no longer using row direction but column */
       flex-direction: column;

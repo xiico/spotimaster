@@ -1,0 +1,57 @@
+html, body {
+    height: 100%;
+  }
+  
+  body {
+    display: grid;
+    overflow: hidden;
+  }
+  
+  .btn-circle-download {
+    position: relative;
+    height: 48px;
+    width: 48px;
+    margin: auto;
+    border-radius: 100%;
+    background: #E8EAED;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .btn-circle-download svg {
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+  .btn-circle-download svg#border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 5s linear;
+  }
+  .btn-circle-download:hover {
+    background: rgba(0, 119, 255, 0.2);
+  }
+  .btn-circle-download:hover #arrow path,
+  .btn-circle-download:hover #arrow polyline {
+    stroke: #0077FF;
+  }
+  .btn-circle-download.load {
+    background: rgba(0, 119, 255, 0.2);
+  }
+  .btn-circle-download.load #arrow path,
+  .btn-circle-download.load #arrow polyline {
+    stroke: #0077FF;
+  }
+  .btn-circle-download.load #border {
+    stroke: #0077FF;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 0;
+  }
+  .btn-circle-download.done #border {
+    display: none;
+  }
+  

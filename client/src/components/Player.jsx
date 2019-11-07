@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, /*useRef*/ } from 'react';
 import './Player.css';
 import './Button.css';
 import spotifyService from '../services/spotifyService';
 import Card from "./Card";
-import { set } from 'mongoose';
+import Next from "./Next";
 export default function Player(props) {    
     const [player, setplayer] = useState(null);
     const [device, setdevice] = useState(null);
@@ -15,6 +15,8 @@ export default function Player(props) {
     const [seed, setseed] = useState(true);
     const [checked, setchecked] = useState(null);
     const [correct, setcorrect] = useState(0);
+    const [canstart, setcanstart] = useState(false);
+    // const next = useRef();
     
     useEffect(()=>{
         const existingScript = document.getElementById('player');        
@@ -47,7 +49,8 @@ export default function Player(props) {
               // Ready
               plr.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
-                setdevice(device_id)
+                setdevice(device_id);
+                setcanstart(true);
               });
         
               // Not Ready
@@ -63,11 +66,12 @@ export default function Player(props) {
         if(tracklist && canplay) playTrack(tracklist.shift());
     });
     const playTrack = async (track) => {
+      // next.current.done();
+      setcanplay(false);
       setchecked(false);
       let recommendations = await getRecommendations(track.id);
-      while(!recommendations || !recommendations.tracks.length && tracklist.length) {
-        let t = tracklist.shift();
-        recommendations = await getRecommendations(t.id);
+      while((!recommendations || !recommendations.tracks.length) && tracklist.length) {
+        recommendations = await getRecommendations(tracklist[Math.floor(Math.random() * tracklist.length)].id);
       }
       setcanplay(false);
       shuffleArray(recommendations.tracks);
@@ -77,6 +81,7 @@ export default function Player(props) {
       // console.log("rand: ", rand);
       setseed(track);
       setcurtrack(rand);
+      // next.current.start();
     }
     const createTrackList = (trl) => {
       if(trl){
@@ -140,12 +145,14 @@ export default function Player(props) {
     }
     return (
         <div className="player_container">
-            <div className={"counter" + (!(tracklist || {}).length ? " hidden" : "")}>{`There are ${((tracklist || {}).length || 0)} left`}
+            <div className={"counter" + (!started ? " hidden" : "")}>
+              <span>{`There are ${((tracklist || {}).length || 0)} left`}</span>
+              <span> - </span>
               <spa>Your score is {correct}</spa>
             </div>
             {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
             {started ? renderCards() : (
-              <button className="start start_button" onClick={() => start() } >Start</button>
+              <button className={`start start_button${(canstart?"":" hidden")}`} onClick={() => start() }>Start</button>
             )}
             {(seed ? (
               <div style={{width: '100%'}} >
@@ -155,6 +162,8 @@ export default function Player(props) {
                   track={seed.name || seed.track}
                   onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} }
                 ></Card>
+                {/* <Next ref={next} onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} } ></Next> */}
+                {/* <Next onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} } ></Next> */}
               </div>
             ) : <div></div>)}
         </div>        
