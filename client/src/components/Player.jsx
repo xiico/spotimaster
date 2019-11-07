@@ -68,7 +68,7 @@ export default function Player(props) {
     const playTrack = async (track) => {
       // next.current.done();
       setcanplay(false);
-      setchecked(false);
+      setchecked(null);
       let recommendations = await getRecommendations(track.id);
       while((!recommendations || !recommendations.tracks.length) && tracklist.length) {
         recommendations = await getRecommendations(tracklist[Math.floor(Math.random() * tracklist.length)].id);
@@ -78,7 +78,7 @@ export default function Player(props) {
       shuffleArray(recommendations.tracks);
       setoptions(recommendations);
       var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
-      spotifyService.play(props.token, device, rand.id);
+      if(rand) spotifyService.play(props.token, device, rand.id, rand.duration_ms / 3);
       // console.log("rand: ", rand);
       setseed(track);
       setcurtrack(rand);
@@ -103,14 +103,22 @@ export default function Player(props) {
     }
     const checkAnwser = (track) => {
       if(curtrack.id == track.id) setcorrect(correct+1);
-      setchecked(true);
+      setchecked(track.id);
+      if (!tracklist.length) {
+        setTimeout(() => {
+          setcanstart(true);
+          setstarted(false);          
+        }, 5000);
+      }
     }
     const renderChecks = (track) => {
       return (
         <div>
-          <svg className={`check_mark ${curtrack.id == track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
-          <svg className={`error_mark ${curtrack.id != track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z"/></svg>
-          <div className={`card_screen ${curtrack.id != track.id ? "" : "hidden"}`}></div>
+
+          {(curtrack.id == checked ? <svg className={`check_mark ${curtrack.id == track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
+           :<svg className={`error_mark ${checked == track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z"/></svg>
+          )}
+          <div className={`card_screen`}></div>
         </div>
       );
     }
@@ -142,6 +150,8 @@ export default function Player(props) {
     const start = async () => {
       let trks = await spotifyService.tracks(props.token);
       createTrackList(trks);
+      // if(!canplay) playTrack(tracklist.shift());
+      setcorrect(0);
       setstarted(true);
     }
     return (

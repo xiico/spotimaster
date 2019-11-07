@@ -17,7 +17,7 @@ export default {
         }
         return res.data;
     },
-    play: async (token, device, track) => {
+    play: async (token, device, track, position) => {
         let config = {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export default {
         }
         const data = {
             "uris": [`spotify:track:${track}`],
-            "position_ms": 0
+            "position_ms": position || 0
           }
         let res;
         try {

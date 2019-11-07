@@ -28,16 +28,14 @@ module.exports = (app) => {
   //   });
   // });
 
-  // app.put(`/api/user/:id`, async (req, res) => {
-  //   const { id } = req.params;
-
-  //   let user = await User.findByIdAndUpdate(id, req.body);
-
-  //   return res.status(202).send({
-  //     error: false,
-  //     user
-  //   });
-  // });
+  app.put(`/api/user/:id`, async (req, res) => {
+    const { id } = req.params;
+    let user = await User.findByIdAndUpdate(id, req.body);
+    return res.status(202).send({
+      error: false,
+      user
+    });
+  });
 
   // app.delete(`/api/user/:id`, async (req, res) => {
   //   const { id } = req.params;
