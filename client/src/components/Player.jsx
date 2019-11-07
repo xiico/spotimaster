@@ -12,6 +12,8 @@ export default function Player(props) {
     const [curtrack, setcurtrack] = useState(null);
     const [tracklist, settracklist] = useState(null);
     const [canplay, setcanplay] = useState(true);
+    const [seed, setseed] = useState(true);
+    const [checked, setchecked] = useState(null);
     
     useEffect(()=>{
         const existingScript = document.getElementById('player');        
@@ -56,20 +58,24 @@ export default function Player(props) {
               plr.connect();
               setplayer(plr);
             };
-          }
-          if(tracklist && canplay) playTrack(tracklist.shift());
+        }
+        if(tracklist && canplay) playTrack(tracklist.shift());
     });
     const playTrack = async (track) => {
+      setchecked(false);
       let recommendations = await getRecommendations(track.id);
-      if(!recommendations.tracks) {
+      while(!recommendations || !recommendations.tracks.length && tracklist.length) {
         let t = tracklist.shift();
         recommendations = await getRecommendations(t.id);
       }
       setcanplay(false);
-      spotifyService.play(props.token, device, track.id);
-      recommendations.tracks.push(track);
-      recommendations.tracks.sort(function (a, b) { return 0.5 - Math.random() });
+      shuffleArray(recommendations.tracks);
       setoptions(recommendations);
+      var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
+      spotifyService.play(props.token, device, rand.id);
+      // console.log("rand: ", rand);
+      setseed(track);
+      setcurtrack(rand);
     }
     const createTrackList = (trl) => {
       if(trl){
@@ -81,32 +87,44 @@ export default function Player(props) {
             track: t.name
           }
         });
-        trks.sort(function (a, b) { return 0.5 - Math.random() });
+        shuffleArray(trks);
         settracklist(trks);
       }
     }
     const getRecommendations = async (seed) => {
       return await spotifyService.recommendations(props.token, seed, props.user.country);
     }
-    const checkAnwser = (track) => {
-
+    const checkAnwser = () => {
+        setchecked(true);
+    }
+    const renderChecks = (track) => {
+      return (
+        <div>
+          <svg className={`check_mark ${curtrack.id == track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
+          <svg className={`error_mark ${curtrack.id != track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z"/></svg>
+          <div className={`card_screen ${curtrack.id != track.id ? "" : "hidden"}`}></div>
+        </div>
+      );
     }
     const renderCards = () => {
       return (
-        options 
+        options && curtrack
         ?
           (<div className="cards_list">
             {options.tracks.map(option => {
-              console.log(option);
-              return (              
-              <Card
-                id={option.id} 
-                key={option.id}
-                artist={ option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist }
-                image={ option.album ? option.album.images.find(a => a.width == 300).url : option.image} 
-                track={option.name || option.track}
-                onClick={() => spotifyService.play(props.token, device, option.id)}
-              ></Card>
+              // console.log(option);
+              return (
+                <div className="card_container">
+                  <Card
+                    id={option.id} 
+                    key={option.id}
+                    artist={ option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist }
+                    image={ option.album ? option.album.images.find(a => a.width == 300).url : option.image} 
+                    track={option.name || option.track}
+                    onClick={checkAnwser}
+                  ></Card>
+                  {checked ? renderChecks(option):<div></div>}
+                </div>
             )})}
           </div>)
         :
@@ -125,15 +143,22 @@ export default function Player(props) {
             {started ? renderCards() : (
               <button className="start start_button" onClick={() => start() } >Start</button>
             )}
-            {(curtrack ? (
+            {(seed ? (
               <div style={{width: '100%'}} >
                 <Card
-                  artist={curtrack.artists.map(e => ` ${e.name}`).toString().trimStart()}
-                  image={curtrack.album.images.find(a => a.width == 300).url} track={curtrack.name}
+                  artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
+                  image={seed.album ? seed.album.images.find(a => a.width == 300).url : seed.image} 
+                  track={seed.name || seed.track}
                   onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} }
                 ></Card>
               </div>
             ) : <div></div>)}
         </div>        
     )
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+      }
+  }
 }

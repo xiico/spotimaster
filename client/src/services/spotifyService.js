@@ -46,7 +46,7 @@ export default {
         }
         let res;
         try {
-            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=4&market=${market}&seed_tracks=${seed}&min_popularity=50`, config);            
+            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=5&market=${market}&seed_tracks=${seed}&min_popularity=50`, config);            
         } catch (error) {
             console.log(error)
             if(error.response.status === 401)
