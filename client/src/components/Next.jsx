@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle , useRef, forwardRef } from 'react';
 import './Next.css';
-const Child = forwardRef((props, ref) => {
+const Next = forwardRef((props, ref) => {
     const [running, setrunning] = useState(false);
     const btn = useRef();
     useImperativeHandle(ref, () => ({
@@ -40,4 +40,4 @@ const Child = forwardRef((props, ref) => {
         </div>
     );
 });
-export default Child;
+export default Next;
