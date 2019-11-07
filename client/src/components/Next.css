@@ -30,7 +30,7 @@ html, body {
     stroke: none;
     stroke-dasharray: 144;
     stroke-dashoffset: 144;
-    transition: all 5s linear;
+    transition: all 60s linear;
   }
   .btn-circle-download:hover {
     background: rgba(0, 119, 255, 0.2);

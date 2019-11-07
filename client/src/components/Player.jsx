@@ -1,4 +1,4 @@
-import React, { useState, useEffect, /*useRef*/ } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Player.css';
 import './Button.css';
 import spotifyService from '../services/spotifyService';
@@ -16,7 +16,7 @@ export default function Player(props) {
     const [checked, setchecked] = useState(null);
     const [correct, setcorrect] = useState(0);
     const [canstart, setcanstart] = useState(false);
-    // const next = useRef();
+    const next = useRef();
     
     useEffect(()=>{
         const existingScript = document.getElementById('player');        
@@ -73,6 +73,7 @@ export default function Player(props) {
       while((!recommendations || !recommendations.tracks.length) && tracklist.length) {
         recommendations = await getRecommendations(tracklist[Math.floor(Math.random() * tracklist.length)].id);
       }
+      // next.current.reset();
       setcanplay(false);
       shuffleArray(recommendations.tracks);
       setoptions(recommendations);
@@ -81,7 +82,7 @@ export default function Player(props) {
       // console.log("rand: ", rand);
       setseed(track);
       setcurtrack(rand);
-      // next.current.start();
+      next.current.start();
     }
     const createTrackList = (trl) => {
       if(trl){
@@ -156,14 +157,13 @@ export default function Player(props) {
             )}
             {(seed ? (
               <div style={{width: '100%'}} >
-                <Card
+                {/* <Card
                   artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
                   image={seed.album ? seed.album.images.find(a => a.width == 300).url : seed.image} 
                   track={seed.name || seed.track}
                   onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} }
-                ></Card>
-                {/* <Next ref={next} onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} } ></Next> */}
-                {/* <Next onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} } ></Next> */}
+                ></Card> */}
+                <Next started={started} ref={next} onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} } ></Next>
               </div>
             ) : <div></div>)}
         </div>        
