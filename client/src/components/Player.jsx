@@ -14,6 +14,7 @@ export default function Player(props) {
     const [canplay, setcanplay] = useState(true);
     const [seed, setseed] = useState(true);
     const [checked, setchecked] = useState(null);
+    const [correct, setcorrect] = useState(0);
     
     useEffect(()=>{
         const existingScript = document.getElementById('player');        
@@ -94,8 +95,9 @@ export default function Player(props) {
     const getRecommendations = async (seed) => {
       return await spotifyService.recommendations(props.token, seed, props.user.country);
     }
-    const checkAnwser = () => {
-        setchecked(true);
+    const checkAnwser = (track) => {
+      if(curtrack.id == track.id) setcorrect(correct+1);
+      setchecked(true);
     }
     const renderChecks = (track) => {
       return (
@@ -121,7 +123,7 @@ export default function Player(props) {
                     artist={ option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist }
                     image={ option.album ? option.album.images.find(a => a.width == 300).url : option.image} 
                     track={option.name || option.track}
-                    onClick={checkAnwser}
+                    onClick={()=>checkAnwser(option)}
                   ></Card>
                   {checked ? renderChecks(option):<div></div>}
                 </div>
@@ -138,7 +140,9 @@ export default function Player(props) {
     }
     return (
         <div className="player_container">
-            <div className={"counter" + (!(tracklist || {}).length ? " hidden" : "")}>{`There are ${((tracklist || {}).length || 0)} left`}</div>
+            <div className={"counter" + (!(tracklist || {}).length ? " hidden" : "")}>{`There are ${((tracklist || {}).length || 0)} left`}
+              <spa>Your score is {correct}</spa>
+            </div>
             {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
             {started ? renderCards() : (
               <button className="start start_button" onClick={() => start() } >Start</button>
