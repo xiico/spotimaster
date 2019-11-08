@@ -28,7 +28,7 @@ export default function Player(props) {
             document.body.appendChild(script);        
             window.onSpotifyWebPlaybackSDKReady = () => {
               let plr;
-              const token = props.token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
+              const token = localStorage.access_token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
               plr = new window.Spotify.Player({
                 name: 'Spotimaster Player',
                 getOAuthToken: cb => { cb(token); }
@@ -78,7 +78,7 @@ export default function Player(props) {
       shuffleArray(recommendations.tracks);
       setoptions(recommendations);
       var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
-      if(rand) spotifyService.play(props.token, device, rand.id, rand.duration_ms / 3);
+      if(rand) spotifyService.play(device, rand.id, rand.duration_ms / 3);
       // console.log("rand: ", rand);
       setseed(track);
       setcurtrack(rand);
@@ -99,7 +99,7 @@ export default function Player(props) {
       }
     }
     const getRecommendations = async (seed) => {
-      return await spotifyService.recommendations(props.token, seed, props.user.country);
+      return await spotifyService.recommendations(seed, props.user.country);
     }
     const checkAnwser = (track) => {
       if(curtrack.id == track.id) setcorrect(correct+1);
@@ -149,7 +149,7 @@ export default function Player(props) {
       );
     }
     const start = async () => {
-      let trks = await spotifyService.tracks(props.token);
+      let trks = await spotifyService.tracks();
       createTrackList(trks);
       // if(!canplay) playTrack(tracklist.shift());
       setcorrect(0);

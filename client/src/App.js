@@ -14,7 +14,7 @@ function App(props) {
   useEffect(()=>{
     if(!user){
       if(window.localStorage.access_token){        
-        getSpotifyUser(window.localStorage.access_token).then(spotiUser => setuser(spotiUser));        
+        getSpotifyUser().then(spotiUser => setuser(spotiUser));        
         settoken(window.localStorage.access_token);        
       }
       else
@@ -23,19 +23,19 @@ function App(props) {
         let access_token = result.token || result['?token'];
         if (access_token) {
           window.localStorage.access_token = access_token;
-          getSpotifyUser(window.localStorage.access_token).then(spotiUser => setuser(spotiUser));          
-          settoken(access_token);        
+          window.localStorage.refresh_token = result.refresh_token;
+          window.location = "http://localhost:3000";     
         }
       }
     }
-  });
-  const getSpotifyUser = async (token) => {
-    let user = await spotifyService.user(token);
+  }, [props.location.hash, props.location.search, user]);
+  const getSpotifyUser = async () => {
+    let user = await spotifyService.user();
     return user;
   }
   const renderPlayer = player => {
     return (
-      <Player token={access_token} user={user} seed={'29rTQRoLUMfWgVlXHQZ7bJ'} ></Player>
+      <Player token={access_token} user={user} ></Player>
     );
   };
   return (
