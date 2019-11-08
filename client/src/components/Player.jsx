@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Player.css';
 import './Button.css';
 import spotifyService from '../services/spotifyService';
+import userService from '../services/userService';
 import Card from "./Card";
 import Next from "./Next";
 export default function Player(props) {    
@@ -25,9 +26,8 @@ export default function Player(props) {
             script.src = 'https://sdk.scdn.co/spotify-player.js'; // URL for the third-party library being loaded.
             script.id = 'player'; // e.g., googleMaps or stripe
             document.body.appendChild(script);        
-            script.onload = () => {
+            window.onSpotifyWebPlaybackSDKReady = () => {
               let plr;
-              console.log('loaded:', window.onSpotifyWebPlaybackSDKReady);
               const token = props.token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
               plr = new window.Spotify.Player({
                 name: 'Spotimaster Player',
@@ -105,6 +105,7 @@ export default function Player(props) {
       if(curtrack.id == track.id) setcorrect(correct+1);
       setchecked(track.id);
       if (!tracklist.length) {
+        userService.update(props.user);
         setTimeout(() => {
           setcanstart(true);
           setstarted(false);          
@@ -159,7 +160,7 @@ export default function Player(props) {
             <div className={"counter" + (!started ? " hidden" : "")}>
               <span>{`There are ${((tracklist || {}).length || 0)} left`}</span>
               <span> - </span>
-              <spa>Your score is {correct}</spa>
+              <span>Your score is {correct}</span>
             </div>
             {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
             {started ? renderCards() : (
