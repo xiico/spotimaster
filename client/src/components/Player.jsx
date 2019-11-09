@@ -97,7 +97,7 @@ export default function Player(props) {
           return {
             id: t.id,
             artist: t.artists.map(e => ` ${e.name}`).toString().trimStart(),
-            image: t.album.images.find(a => a.width === 300).url,
+            image: (t.album.images.find(a => a.width === 300) || {url:''}).url,
             track: t.name
           }
         });
@@ -127,8 +127,8 @@ export default function Player(props) {
       return (
         <div>
           {(<div>
-            <svg className={`check_mark ${checked && checked == track.id && curtrack.id == track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z" /></svg>
-            <svg className={`error_mark ${checked && checked == track.id && curtrack.id != track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z" /></svg>
+            <svg className={`check_mark ${checked && checked == track.id && curtrack.id == track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z" /></svg>
+            <svg className={`error_mark ${checked && checked == track.id && curtrack.id != track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z" /></svg>
           </div>)}
           <div className={`card_screen ${checked ? "" : "hidden"}`}></div>
         </div>
@@ -142,12 +142,12 @@ export default function Player(props) {
             {options.tracks.map(option => {
               // console.log(option);
               return (
-                <div className="card_container">
+                <div key={option.id} className="card_container">
                   <Card
                     id={option.id} 
-                    key={option.id}
+                    
                     artist={ option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist }
-                    image={ option.album ? option.album.images.find(a => a.width === 300).url : option.image} 
+                    image={ option.album ? (option.album.images.find(a => a.width === 300) || {url:''}).url : option.image} 
                     track={option.name || option.track}
                     onClick={()=>checkAnwser(option)}
                   ></Card>

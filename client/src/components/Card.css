@@ -48,6 +48,10 @@
   .title-black {
     color: black;
   }
+
+  .card_image path{
+    fill: white;
+  }
   
   @media all and (max-width: 1200px) {
     .card_list {

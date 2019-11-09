@@ -49,10 +49,19 @@
   }
 
   .check_mark, .error_mark {
-    top: 80px;
+    top: 210px;
     position: absolute;
     left: 50px;
     z-index: 2000;
+    opacity: 0;
+    transition: all .2s linear;    
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-left: -50px;
+  }
+  .show{
+    opacity: 1;
+    top: 80px;
   }
 
   @media all and (max-width: 1520px) {
