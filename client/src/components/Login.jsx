@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import queryString from 'query-string';
-
-// SERVICES
-import userService from '../services/userService';
 
 import Cookies from 'js-cookie';
 

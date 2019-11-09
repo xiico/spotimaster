@@ -5,8 +5,7 @@ import spotifyService from '../services/spotifyService';
 import userService from '../services/userService';
 import Card from "./Card";
 import Next from "./Next";
-export default function Player(props) {    
-    const [player, setplayer] = useState(null);
+export default function Player(props) {
     const [device, setdevice] = useState(null);
     const [started, setstarted] = useState(null);
     const [options, setoptions] = useState(null);
@@ -17,6 +16,7 @@ export default function Player(props) {
     const [checked, setchecked] = useState(null);
     const [correct, setcorrect] = useState(0);
     const [canstart, setcanstart] = useState(false);
+    const [plsize] = useState(20);
     const next = useRef();
     
     useEffect(()=>{
@@ -60,7 +60,6 @@ export default function Player(props) {
         
               // Connect to the player!
               plr.connect();
-              setplayer(plr);
             };
         }
         if(tracklist && canplay) playTrack(tracklist.shift());
@@ -69,9 +68,17 @@ export default function Player(props) {
       // next.current.done();
       setcanplay(false);
       setchecked(null);
+      let recommended;
       let recommendations = await getRecommendations(track.id);
+      console.log('track: ', track);
+      console.log('recommendations: ', recommendations);
       while((!recommendations || !recommendations.tracks.length) && tracklist.length) {
-        recommendations = await getRecommendations(tracklist[Math.floor(Math.random() * tracklist.length)].id);
+        recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
+        recommendations = await getRecommendations(recommended.id);
+      }
+      if(recommendations.tracks.length === 0){
+        console.log('no recommendations!',recommended);
+        recommendations = await getRecommendations(options.tracks[Math.floor(Math.random() * options.tracks.length)].id);
       }
       // next.current.reset();
       setcanplay(false);
@@ -90,7 +97,7 @@ export default function Player(props) {
           return {
             id: t.id,
             artist: t.artists.map(e => ` ${e.name}`).toString().trimStart(),
-            image: t.album.images.find(a => a.width == 300).url,
+            image: t.album.images.find(a => a.width === 300).url,
             track: t.name
           }
         });
@@ -102,24 +109,28 @@ export default function Player(props) {
       return await spotifyService.recommendations(seed, props.user.country);
     }
     const checkAnwser = (track) => {
-      if(curtrack.id == track.id) setcorrect(correct+1);
+      next.current.reset();
+      if(curtrack.id === track.id) setcorrect(correct+1);
       setchecked(track.id);
       if (!tracklist.length) {
+        props.user.points = correct;
         userService.update(props.user);
         setTimeout(() => {
           setcanstart(true);
-          setstarted(false);          
+          setstarted(false);
+          settracklist(null);
+          setcanplay(true);
         }, 5000);
       }
     }
     const renderChecks = (track) => {
       return (
         <div>
-
-          {(curtrack.id == checked ? <svg className={`check_mark ${curtrack.id == track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
-           :<svg className={`error_mark ${checked == track.id ? "" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z"/></svg>
-          )}
-          <div className={`card_screen`}></div>
+          {(<div>
+            <svg className={`check_mark ${checked && checked == track.id && curtrack.id == track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z" /></svg>
+            <svg className={`error_mark ${checked && checked == track.id && curtrack.id != track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z" /></svg>
+          </div>)}
+          <div className={`card_screen ${checked ? "" : "hidden"}`}></div>
         </div>
       );
     }
@@ -136,11 +147,11 @@ export default function Player(props) {
                     id={option.id} 
                     key={option.id}
                     artist={ option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist }
-                    image={ option.album ? option.album.images.find(a => a.width == 300).url : option.image} 
+                    image={ option.album ? option.album.images.find(a => a.width === 300).url : option.image} 
                     track={option.name || option.track}
                     onClick={()=>checkAnwser(option)}
                   ></Card>
-                  {checked ? renderChecks(option):<div></div>}
+                  {renderChecks(option)}
                 </div>
             )})}
           </div>)
@@ -149,10 +160,11 @@ export default function Player(props) {
       );
     }
     const start = async () => {
-      let trks = await spotifyService.tracks();
+      let trks = await spotifyService.tracks(plsize);
       createTrackList(trks);
       // if(!canplay) playTrack(tracklist.shift());
       setcorrect(0);
+      if(started) playTrack(tracklist.shift());
       setstarted(true);
     }
     return (

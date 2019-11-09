@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 
-import userService from './services/userService';
 import spotifyService from './services/spotifyService';
 // import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 // import Game from './components/Game';
@@ -9,7 +8,6 @@ import Header from "./components/Header";
 import Player from "./components/Player";
 function App(props) {
   const [user, setuser] = useState(null);
-  const [player, setplayer] = useState(null);
   const [access_token, settoken] = useState(null);
   useEffect(()=>{
     if(!user){
@@ -35,7 +33,7 @@ function App(props) {
   }
   const renderPlayer = player => {
     return (
-      <Player token={access_token} user={user} ></Player>
+      <Player user={user} ></Player>
     );
   };
   return (

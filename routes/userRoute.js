@@ -29,11 +29,17 @@ module.exports = (app) => {
   // });
 
   app.put(`/api/user/:id`, async (req, res) => {
+    console.log('params: ', req.params);
+    console.log('body: ', req.body);
+
     const { id } = req.params;
-    let user = await User.findByIdAndUpdate(id, req.body);
+    delete req.body.id;
+    let result = await User.updateOne({id:id}, req.body);
+    console.log('result: ', result);
     return res.status(202).send({
       error: false,
-      user
+      found: result.n,
+      modified: result.nModified,
     });
   });
 

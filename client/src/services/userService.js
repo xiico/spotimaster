@@ -18,7 +18,7 @@ export default {
       points: user.points,
       picture: user.images[0].url
     }
-    let res = await axios.put(`/api/user?id=${user.id}`, data);
+    let res = await axios.put(`/api/user/${user.id}`, data);
     return res.data;
   }
 }

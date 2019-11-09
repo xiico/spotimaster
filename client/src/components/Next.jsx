@@ -5,8 +5,15 @@ const Next = forwardRef((props, ref) => {
     const btn = useRef();
     useImperativeHandle(ref, () => ({
         reset() {
-            btn.current.classList.remove("done");
-            btn.current.classList.remove("load");
+            setTimeout(function () {
+                btn.current.classList.add("done");
+            }, 200);
+            setTimeout(function () {
+                btn.current.classList.remove("load");
+                btn.current.classList.remove("done");
+                setrunning(false);
+            }, 400);
+            setrunning(false);
         },
         done() {
             btn.current.classList.add("done");

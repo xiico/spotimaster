@@ -72,8 +72,14 @@
       height: 176px;
     }
     .check_mark, .error_mark {
-      top: 30px;
+      top: 120px;
       left: 30px;
       width: 60px;
+      opacity: 0;
+      transition: all .2s linear;
+    }
+    .show{
+      opacity: 1;
+      top: 30px;
     }
   }
