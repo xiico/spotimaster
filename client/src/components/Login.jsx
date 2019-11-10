@@ -6,7 +6,8 @@ import Cookies from 'js-cookie';
 // Components
 import Link from './Link';
 
-import runtimeEnv from '@mars/heroku-js-runtime-env';
+// import runtimeEnv from '@mars/heroku-js-runtime-env';
+import runtimeEnv from '../modules/runtimeEnv';
 
 export default function Login() {
     // const [users, setusers] = useState(null);

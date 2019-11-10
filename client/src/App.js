@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
-import runtimeEnv from '@mars/heroku-js-runtime-env';
+import runtimeEnv from './modules/runtimeEnv';
 
 import spotifyService from './services/spotifyService';
 // import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
