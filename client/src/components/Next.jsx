@@ -2,9 +2,12 @@ import React, { useState, useImperativeHandle , useRef, forwardRef } from 'react
 import './Next.css';
 const Next = forwardRef((props, ref) => {
     const [running, setrunning] = useState(false);
+    const [timers, setimers] = useState([]);
     const btn = useRef();
     useImperativeHandle(ref, () => ({
         reset() {
+            clearTimeout(timers[0]);
+            clearTimeout(timers[1]);
             setTimeout(function () {
                 btn.current.classList.add("done");
             }, 200);
@@ -21,15 +24,17 @@ const Next = forwardRef((props, ref) => {
         start() {
             if (!running) {
                 setrunning(true);
+                let tmrs = [];
                 btn.current.classList.add("load");
-                setTimeout(function () {
+                tmrs[0] = setTimeout(function () {
                     btn.current.classList.add("done");
                 }, 60000);
-                setTimeout(function () {
+                tmrs[1] = setTimeout(function () {
                     btn.current.classList.remove("load");
                     btn.current.classList.remove("done");
                     setrunning(false);
                 }, 60100);
+                setimers(tmrs);
             }
         }   
       }));

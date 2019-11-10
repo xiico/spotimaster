@@ -64,6 +64,10 @@
     top: 80px;
   }
 
+  .score_info{
+    width: 100%;;
+  }
+
   @media all and (max-width: 1520px) {
     .cards_list {
       width: 80%;

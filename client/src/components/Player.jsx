@@ -5,6 +5,7 @@ import spotifyService from '../services/spotifyService';
 import userService from '../services/userService';
 import Card from "./Card";
 import Next from "./Next";
+import Score from "./Score"
 export default function Player(props) {
     const [device, setdevice] = useState(null);
     const [started, setstarted] = useState(null);
@@ -16,7 +17,8 @@ export default function Player(props) {
     const [checked, setchecked] = useState(null);
     const [correct, setcorrect] = useState(0);
     const [canstart, setcanstart] = useState(false);
-    const [plsize] = useState(20);
+    const [showscore, setshowscore] = useState(false);
+    const [plsize] = useState(5);
     const next = useRef();
     
     useEffect(()=>{
@@ -116,7 +118,7 @@ export default function Player(props) {
         props.user.points = correct;
         userService.update(props.user);
         setTimeout(() => {
-          setcanstart(true);
+          setshowscore(true);
           setstarted(false);
           settracklist(null);
           setcanplay(true);
@@ -127,8 +129,8 @@ export default function Player(props) {
       return (
         <div>
           {(<div>
-            <svg className={`check_mark ${checked && checked == track.id && curtrack.id == track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z" /></svg>
-            <svg className={`error_mark ${checked && checked == track.id && curtrack.id != track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z" /></svg>
+            <svg className={`check_mark ${checked && checked === track.id && curtrack.id === track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z" /></svg>
+            <svg className={`error_mark ${checked && checked === track.id && curtrack.id !== track.id ? "show" : ""}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.971 0h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-1.402 16.945l-3.554-3.521-3.518 3.568-1.418-1.418 3.507-3.566-3.586-3.472 1.418-1.417 3.581 3.458 3.539-3.583 1.431 1.431-3.535 3.568 3.566 3.522-1.431 1.43z" /></svg>
           </div>)}
           <div className={`card_screen ${checked ? "" : "hidden"}`}></div>
         </div>
@@ -166,6 +168,7 @@ export default function Player(props) {
       setcorrect(0);
       if(started) playTrack(tracklist.shift());
       setstarted(true);
+      setshowscore(false);
     }
     return (
         <div className="player_container">
@@ -176,16 +179,18 @@ export default function Player(props) {
             </div>
             {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
             {started ? renderCards() : (
-              <button className={`start start_button${(canstart?"":" hidden")}`} onClick={() => start() }>Start</button>
+              <button className={`start start_button${(canstart && !showscore?"":" hidden")}`} onClick={() => start() }>Start</button>
             )}
             {(seed ? (
-              <div style={{width: '100%'}} >
+              <div className="score_info" >
                 {/* <Card
                   artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
                   image={seed.album ? seed.album.images.find(a => a.width == 300).url : seed.image} 
                   track={seed.name || seed.track}
                   onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} }
-                ></Card> */}
+                ></Card> */
+                <Score showscore={showscore} score={1200} hits={correct} total={plsize} onClick={() => start()}></Score>
+                }
                 <Next started={started} ref={next} onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} } ></Next>
               </div>
             ) : <div></div>)}
