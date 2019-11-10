@@ -4,7 +4,7 @@ var request = require('request'); // "Request" library
 var stateKey = 'spotify_auth_state';
 var redirect_uri = `${process.env.HOST_API}/callback`
 var client_id = 'e303f193728348cc8ee76730b6f21e1e';
-var client_secret = '1cdeba65c5ff4916a3fad860cc0ed322';
+var client_secret = process.env.CLIENT_SECRET;
 var mongoose = require('mongoose');
 const User = mongoose.model('users');
 module.exports = (app) => {
