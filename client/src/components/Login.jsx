@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 // Components
 import Link from './Link';
 
+import runtimeEnv from '@mars/heroku-js-runtime-env';
+
 export default function Login() {
     // const [users, setusers] = useState(null);
     const generateRandomString = function (length) {
@@ -19,10 +21,11 @@ export default function Login() {
     };
     const state = generateRandomString(16);
     var stateKey = 'spotify_auth_state';
+    const env = runtimeEnv();
 
     useEffect(() => {
         Cookies.set(stateKey, state);
-        console.log('.env: ',process.env.REACT_APP_HOST_CLIENT);
+        console.log('.env: ',env.REACT_APP_HOST_CLIENT);
     })
     const params = () => {
         return queryString.stringify({
@@ -31,7 +34,7 @@ export default function Login() {
             scope: 'user-read-private user-read-email streaming user-modify-playback-state user-top-read',
             // redirect_uri: `http://localhost:5000/callback`,
             // redirect_uri: `http://spotimaster.herokuapp.com/callback`,
-            redirect_uri: `${process.env.REACT_APP_HOST_API}/callback`,
+            redirect_uri: `${env.REACT_APP_HOST_API}/callback`,
             state: state
         });
     }

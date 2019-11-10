@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
 import spotifyService from './services/spotifyService';
 // import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -9,6 +10,7 @@ import Player from "./components/Player";
 function App(props) {
   const [user, setuser] = useState(null);
   const [access_token, settoken] = useState(null);
+  const env = runtimeEnv();
   useEffect(()=>{
     if(!user){
       if(window.localStorage.access_token){        
@@ -24,7 +26,7 @@ function App(props) {
           window.localStorage.refresh_token = result.refresh_token;
           // window.location = 'http://localhost:3000';
           // window.location = 'http://spotimaster.herokuapp.com';
-          window.location = process.env.REACT_APP_HOST_CLIENT
+          window.location = env.REACT_APP_HOST_CLIENT
         }
       }
     }
