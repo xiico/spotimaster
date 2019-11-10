@@ -21,14 +21,17 @@ export default function Login() {
     var stateKey = 'spotify_auth_state';
 
     useEffect(() => {
-        Cookies.set(stateKey, state);        
+        Cookies.set(stateKey, state);
+        console.log('.env: ',process.env.REACT_APP_HOST_CLIENT);
     })
     const params = () => {
         return queryString.stringify({
             response_type: 'code',
             client_id: 'e303f193728348cc8ee76730b6f21e1e',
             scope: 'user-read-private user-read-email streaming user-modify-playback-state user-top-read',
-            redirect_uri: 'http://localhost:5000/callback',
+            // redirect_uri: `http://localhost:5000/callback`,
+            // redirect_uri: `http://spotimaster.herokuapp.com/callback`,
+            redirect_uri: `${process.env.REACT_APP_HOST_API}/callback`,
             state: state
         });
     }

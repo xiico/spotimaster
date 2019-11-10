@@ -2,7 +2,7 @@
 var querystring = require('querystring');
 var request = require('request'); // "Request" library
 var stateKey = 'spotify_auth_state';
-var redirect_uri = 'http://localhost:5000/callback'
+var redirect_uri = `${process.env.HOST_API}/callback`
 var client_id = 'e303f193728348cc8ee76730b6f21e1e';
 var client_secret = '1cdeba65c5ff4916a3fad860cc0ed322';
 var mongoose = require('mongoose');
@@ -82,7 +82,7 @@ module.exports = (app) => {
             }
             console.log("user", user);
             // we can also pass the token to the browser to make requests from there
-            res.redirect('http://localhost:3000/#' + querystring.stringify({ token: access_token, refresh_token: refresh_token }));
+            res.redirect(`${process.env.HOST_CLIENT}/#` + querystring.stringify({ token: access_token, refresh_token: refresh_token }));
           });
         } else {
           res.redirect('/#' +

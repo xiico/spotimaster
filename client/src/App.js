@@ -22,7 +22,9 @@ function App(props) {
         if (access_token) {
           window.localStorage.access_token = access_token;
           window.localStorage.refresh_token = result.refresh_token;
-          window.location = "http://localhost:3000";     
+          // window.location = 'http://localhost:3000';
+          // window.location = 'http://spotimaster.herokuapp.com';
+          window.location = process.env.REACT_APP_HOST_CLIENT
         }
       }
     }
