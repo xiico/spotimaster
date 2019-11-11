@@ -35,6 +35,11 @@ module.exports = (app) => {
     user.name = req.body.name;
     user.picure = req.body.picure;
     user.scores.push(req.body.score);
+    user.scores.sort((a, b) => {
+        if(!a || !b) return;
+        return b.points - a.points;
+      }
+    );
     delete req.body.id;
     user.save(error => {
       if (error) res.status(500).send({ error: error });
