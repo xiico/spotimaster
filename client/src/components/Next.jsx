@@ -28,12 +28,12 @@ const Next = forwardRef((props, ref) => {
                 btn.current.classList.add("load");
                 tmrs[0] = setTimeout(function () {
                     btn.current.classList.add("done");
-                }, 60000);
+                }, 30000);
                 tmrs[1] = setTimeout(function () {
                     btn.current.classList.remove("load");
                     btn.current.classList.remove("done");
                     setrunning(false);
-                }, 60100);
+                }, 30100);
                 setimers(tmrs);
             }
         }   

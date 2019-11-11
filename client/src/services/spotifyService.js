@@ -12,31 +12,35 @@ export default {
         }
         return res.data;
     },
-    play: async (device, track, position) => {
+    play: async (device, track, position, usepreview) => {
         const data = {
-            "uris": [`spotify:track:${track}`],
+            "uris": [`spotify:track:${track.id}`],
             "position_ms": position || 0
           }
-        let res;
+        let preview
         try {
-            res = await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, data, getConfig());
+            if(!usepreview) await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, data, getConfig());
+            else {
+                preview = new Audio(track.preview_url);
+                preview.play();
+            }
         } catch (error) {
             console.log(error)
             if(error.response.status === 401)
-            delete window.localStorage.access_token;
+            refreshToken();
             return await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, data, getConfig()).data;
         }
-        return res.data;
+        return preview;
     },
     recommendations: async (seed, market) => {
         let res;
         try {
-            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=5&market=${market}&seed_tracks=${seed}&min_popularity=50`, getConfig());
+            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=20&market=${market}&seed_tracks=${seed}&min_popularity=50`, getConfig());
         } catch (error) {
             console.log(error)
             if(error.response.status === 401)
-            delete window.localStorage.access_token;
-            return await axios.get(`https://api.spotify.com/v1/recommendations?limit=5&market=${market}&seed_tracks=${seed}&min_popularity=50`, getConfig()).data;
+            refreshToken();
+            return await axios.get(`https://api.spotify.com/v1/recommendations?limit=20&market=${market}&seed_tracks=${seed}&min_popularity=50`, getConfig()).data;
         }
         return res.data;
     },
@@ -47,11 +51,12 @@ export default {
         } catch (error) {
             console.log(error)
             if(error.response.status === 401)
-            delete window.localStorage.access_token;
+            refreshToken();
             return await axios.get(`https://api.spotify.com/v1/me/top/tracks?limit=20`, getConfig()).data;
         }
         return res.data;
-    }
+    },
+    refreshToken: refreshToken
 }
 
 function getConfig() {
@@ -67,6 +72,7 @@ async function refreshToken() {
     try {
         res = await axios.get(`/api/refresh_token?refresh_token=${localStorage.refresh_token}`);
         window.localStorage.access_token = res.data.access_token;
+        console.log('token_refreshed');
     }
     catch (error) {
         console.log(error);

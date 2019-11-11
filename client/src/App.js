@@ -13,7 +13,9 @@ function App(props) {
   useEffect(()=>{
     if(!user){
       if(window.localStorage.access_token){
+        spotifyService.refreshToken();
         getSpotifyUser().then(spotiUser => setuser(spotiUser));
+        setInterval(() => spotifyService.refreshToken(), 3300000);
       }
       else
       {
@@ -23,7 +25,7 @@ function App(props) {
           console.log("App.env:", env.REACT_APP_HOST_CLIENT);
           window.localStorage.access_token = access_token;
           window.localStorage.refresh_token = result.refresh_token;
-          window.location = env.REACT_APP_HOST_CLIENT
+          window.location = env.REACT_APP_HOST_CLIENT;
         }
       }
     }

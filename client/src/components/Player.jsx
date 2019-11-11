@@ -25,6 +25,8 @@ export default function Player(props) {
   const [maxcombo, setmaxcombo] = useState(0);
   const [score, setscore] = useState(0);
   const [plsize] = useState(env.REACT_APP_PLSIZE || 20);
+  const [usepreview, setusepreview] = useState(true);
+  const [preview, setpreview] = useState(false);
   const next = useRef();
 
   useEffect(() => {
@@ -35,51 +37,58 @@ export default function Player(props) {
       script.id = 'player'; // e.g., googleMaps or stripe
       document.body.appendChild(script);
       window.onSpotifyWebPlaybackSDKReady = () => {
-        let plr;
-        const token = localStorage.access_token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
-        plr = new window.Spotify.Player({
-          name: 'Spotimaster Player',
-          getOAuthToken: cb => { cb(token); }
-        });
+        try {
+          let plr;
+          const token = localStorage.access_token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
+          plr = new window.Spotify.Player({
+            name: 'Spotimaster Player',
+            getOAuthToken: cb => { cb(token); }
+          });
 
-        // Error handling
-        plr.addListener('initialization_error', ({ message }) => { console.error(message); });
-        plr.addListener('authentication_error', ({ message }) => { console.error(message); });
-        plr.addListener('account_error', ({ message }) => { console.error(message); });
-        plr.addListener('playback_error', ({ message }) => { console.error(message); });
+          // Error handling
+          plr.addListener('initialization_error', ({ message }) => { setusepreview(false); console.error(message); });
+          plr.addListener('authentication_error', ({ message }) => { setusepreview(false); console.error(message); });
+          plr.addListener('account_error', ({ message }) => { setusepreview(false); console.error(message); });
+          plr.addListener('playback_error', ({ message }) => { setusepreview(false); console.error(message); });
 
-        // Playback status updates
-        plr.addListener('player_state_changed', state => {
-          console.log(state);
-          setcurtrack(state.track_window.current_track);
-        });
+          // Playback status updates
+          plr.addListener('player_state_changed', state => {
+            console.log(state);
+            if (state) setcurtrack(state.track_window.current_track);
+          });
 
-        // Ready
-        plr.addListener('ready', ({ device_id }) => {
-          console.log('Ready with Device ID', device_id);
-          setdevice(device_id);
+          // Ready
+          plr.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+            setdevice(device_id);
+            setcanstart(true);
+          });
+
+          // Not Ready
+          plr.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline', device_id);
+          });
+
+          // if (plr) throw new Error('Never mind.');
+          // Connect to the player!
+          plr.connect();
+          setusepreview(false);
+        } catch (error) {
+          console.log(error);
           setcanstart(true);
-        });
-
-        // Not Ready
-        plr.addListener('not_ready', ({ device_id }) => {
-          console.log('Device ID has gone offline', device_id);
-        });
-
-        // Connect to the player!
-        plr.connect();
+        }
       };
     }
     if (tracklist && canplay) playTrack(tracklist.shift());
   });
   const playTrack = async (track) => {
     // next.current.done();
+    if(preview) preview.pause();
     setcanplay(false);
     setchecked(null);
     let recommended;
     let recommendations = await getRecommendations(track.id);
     console.log('track: ', track);
-    console.log('recommendations: ', recommendations);
     while ((!recommendations || !recommendations.tracks.length) && tracklist.length) {
       recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
       recommendations = await getRecommendations(recommended.id);
@@ -88,13 +97,17 @@ export default function Player(props) {
       console.log('no recommendations!', recommended);
       recommendations = await getRecommendations(options.tracks[Math.floor(Math.random() * options.tracks.length)].id);
     }
+    console.log('recommendations: ', recommendations);
     // next.current.reset();
     setcanplay(false);
     setstarttime(new Date().getTime());
     shuffleArray(recommendations.tracks);
     setoptions(recommendations);
     var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
-    if (rand) spotifyService.play(device, rand.id, rand.duration_ms / 3);
+    if (rand) {
+      let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview);
+      setpreview(p);
+    }
     // console.log("rand: ", rand);
     setseed(track);
     setcurtrack(rand);
@@ -115,7 +128,11 @@ export default function Player(props) {
     }
   }
   const getRecommendations = async (seed) => {
-    return await spotifyService.recommendations(seed, props.user.country);
+    let recommendations = await spotifyService.recommendations(seed, props.user.country);    
+    if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => e.preview_url) || [];
+    shuffleArray(recommendations.tracks);
+    recommendations.tracks = recommendations.tracks.slice(0,5);
+    return recommendations;
   }
   const checkAnwser = (track) => {
     next.current.reset();
@@ -203,7 +220,6 @@ export default function Player(props) {
         <span> - </span>
         <span>Your score is {score}</span>{(combo ? ` ${combo}x`: '')}
       </div>
-      {/* {track ? <div>{track}</div> : <button onClick={() => spotifyService.play(props.token,device,'29rTQRoLUMfWgVlXHQZ7bJ')} >Start</button>}*/}
       {started ? renderCards() : (
         <button className={`start start_button${(canstart && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
       )}

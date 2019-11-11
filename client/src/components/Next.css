@@ -14,7 +14,6 @@ html, body {
     margin: auto;
     border-radius: 100%;
     background: #E8EAED;
-    cursor: pointer;
     overflow: hidden;
   }
   .btn-circle-download svg {
@@ -30,7 +29,7 @@ html, body {
     stroke: none;
     stroke-dasharray: 144;
     stroke-dashoffset: 144;
-    transition: all 60s linear;
+    transition: all 30s linear;
   }
   .btn-circle-download:hover {
     background: rgba(0, 119, 255, 0.2);
@@ -53,5 +52,9 @@ html, body {
   }
   .btn-circle-download.done #border {
     display: none;
+  }
+
+  .again span {
+    cursor: pointer;
   }
   
