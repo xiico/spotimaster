@@ -15,7 +15,7 @@ export default {
     const data = {
       name: user.display_name,
       id: user.id,
-      points: user.points,
+      score: user.score,
       picture: user.images[0].url
     }
     let res = await axios.put(`/api/user/${user.id}`, data);

@@ -9,13 +9,11 @@ import Header from "./components/Header";
 import Player from "./components/Player";
 function App(props) {
   const [user, setuser] = useState(null);
-  const [access_token, settoken] = useState(null);
   const env = runtimeEnv();
   useEffect(()=>{
     if(!user){
-      if(window.localStorage.access_token){        
-        getSpotifyUser().then(spotiUser => setuser(spotiUser));        
-        settoken(window.localStorage.access_token);        
+      if(window.localStorage.access_token){
+        getSpotifyUser().then(spotiUser => setuser(spotiUser));
       }
       else
       {
@@ -29,7 +27,7 @@ function App(props) {
         }
       }
     }
-  }, [props.location.hash, props.location.search, user]);
+  }, [props.location.hash, props.location.search, user, env.REACT_APP_HOST_CLIENT]);
   const getSpotifyUser = async () => {
     let user = await spotifyService.user();
     return user;

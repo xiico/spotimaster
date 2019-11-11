@@ -30,17 +30,19 @@ module.exports = (app) => {
 
   app.put(`/api/user/:id`, async (req, res) => {
     console.log('params: ', req.params);
-    console.log('body: ', req.body);
-
     const { id } = req.params;
+    let user = await User.findOne({id:id});
+    user.name = req.body.name;
+    user.picure = req.body.picure;
+    user.scores.push(req.body.score);
     delete req.body.id;
-    let result = await User.updateOne({id:id}, req.body);
-    console.log('result: ', result);
-    return res.status(202).send({
-      error: false,
-      found: result.n,
-      modified: result.nModified,
-    });
+    user.save(error => {
+      if (error) res.status(500).send({ error: error });
+      console.log('user saved');
+      return res.status(202).send({
+        error: false
+      });
+    })
   });
 
   // app.delete(`/api/user/:id`, async (req, res) => {

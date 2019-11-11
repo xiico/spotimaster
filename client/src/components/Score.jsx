@@ -3,16 +3,16 @@ import "./Score.css";
 
 export default function Score(props) {
     return (
-        <div class={`container_score${(props.showscore ? " fade-in show" : "")}`}>
-            <div class="overlay">
-                <div class="score head">
+        <div className={`container_score${(props.showscore ? " fade-in show" : "")}`}>
+            <div className="overlay">
+                <div className="score head">
                     <p>Final Score {props.score}</p>
                     <hr />
                 </div>
-                <div class="score hits">
-                    <p class="old">{props.hits} of {props.total} Artists</p>
+                <div className="score hits">
+                    <p className="old">{props.hits} of {props.total} Tracks - {`Max combo: ${props.maxcombo}`}</p>
                 </div>
-                <div class="score again">
+                <div className="score again">
                     <i>▶</i>
                     <span onClick={props.onClick}>Play Again</span>
                 </div>
