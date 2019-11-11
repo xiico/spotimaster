@@ -18,7 +18,7 @@ export default function Player(props) {
     const [correct, setcorrect] = useState(0);
     const [canstart, setcanstart] = useState(false);
     const [showscore, setshowscore] = useState(false);
-    const [plsize] = useState(5);
+    const [plsize] = useState(20);
     const next = useRef();
     
     useEffect(()=>{

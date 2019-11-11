@@ -22,10 +22,9 @@ function App(props) {
         const result = queryString.parse(props.location.hash || props.location.search);
         let access_token = result.token || result['?token'];
         if (access_token) {
+          console.log("App.env:", env.REACT_APP_HOST_CLIENT);
           window.localStorage.access_token = access_token;
           window.localStorage.refresh_token = result.refresh_token;
-          // window.location = 'http://localhost:3000';
-          // window.location = 'http://spotimaster.herokuapp.com';
           window.location = env.REACT_APP_HOST_CLIENT
         }
       }
