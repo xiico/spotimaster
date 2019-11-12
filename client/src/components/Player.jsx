@@ -237,15 +237,13 @@ export default function Player(props) {
       )}
       {(seed ? (
         <div className="score_info" >
-          {/* <Card
-                  artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
-                  image={seed.album ? seed.album.images.find(a => a.width == 300).url : seed.image} 
-                  track={seed.name || seed.track}
-                  onClick={() => {if(tracklist.length) playTrack(tracklist.shift())} }
-                ></Card> */
-            <Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>
-          }
+          {<Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
           <Next hide={!(tracklist || {}).length} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
+          {(started ? <Card  seed={seed}
+                  artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
+                  image={seed.album ? seed.album.images.find(a => a.width === 300).url : seed.image} 
+                  track={seed.name || seed.track}
+                ></Card> : "")}
         </div>
       ) : <div></div>)}
     </div>

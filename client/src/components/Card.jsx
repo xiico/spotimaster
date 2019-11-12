@@ -9,13 +9,14 @@ export default function Card(props) {
         );
       }
     return (
-            <div onClick={props.onClick} id={props.id} className="card">
-                <div className="card_image">
+            <div onClick={props.onClick} id={props.id} className={`card${props.seed ? " seed" : ""}`}>
+                {props.seed ? <span className="based_upon" >Choices based upon:</span> : ""}
+                <div className={`card_image${props.seed ? " seed_image" : ""}`}>
                     {props.image ? <img alt={"Cover"} src={props.image} /> : renderLogo()}
                 </div>
                 <div className="card_title">
-                    <p>{props.track}</p>
-                    <p className="card_subtitle">{props.artist}</p>
+                    <p>{(props.track || "Track Name" )}</p>
+                    <p className="card_subtitle">{(props.artist || "Artist Name")}</p>
                 </div>
             </div>
     );

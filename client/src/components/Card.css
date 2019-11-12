@@ -52,6 +52,25 @@
   .card_image path{
     fill: white;
   }
+
+  .score_info .seed {
+    height: 60px;
+    width: 100%;
+    margin-top: 90px;
+    margin-left: 20px;
+    pointer-events: none;
+  }
+
+  .score_info .seed_image{
+    float: left;
+    width: 60px;
+    padding-right: 5px;
+  }
+
+  .based_upon {
+    position: absolute;
+    margin-top: -22px;
+  }
   
   @media all and (max-width: 1200px) {
     .card_list {
