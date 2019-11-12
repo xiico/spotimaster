@@ -7,6 +7,8 @@ import runtimeEnv from '../modules/runtimeEnv';
 import Card from "./Card";
 import Next from "./Next";
 import Score from "./Score"
+import isMobileDevice from "../modules/isMobileDevice";
+
 export default function Player(props) {
   const env = runtimeEnv();
   const [device, setdevice] = useState(null);
@@ -25,13 +27,13 @@ export default function Player(props) {
   const [maxcombo, setmaxcombo] = useState(0);
   const [score, setscore] = useState(0);
   const [plsize] = useState(env.REACT_APP_PLSIZE || 20);
-  const [usepreview, setusepreview] = useState(true);
+  const [usepreview, setusepreview] = useState(isMobileDevice());
   const [preview, setpreview] = useState(false);
   const next = useRef();
 
   useEffect(() => {
     const existingScript = document.getElementById('player');
-    if (!existingScript) {
+    if (!existingScript && !usepreview) {
       const script = document.createElement('script');
       script.src = 'https://sdk.scdn.co/spotify-player.js'; // URL for the third-party library being loaded.
       script.id = 'player'; // e.g., googleMaps or stripe
@@ -46,10 +48,10 @@ export default function Player(props) {
           });
 
           // Error handling
-          plr.addListener('initialization_error', ({ message }) => { setusepreview(false); console.error(message); });
-          plr.addListener('authentication_error', ({ message }) => { setusepreview(false); console.error(message); });
-          plr.addListener('account_error', ({ message }) => { setusepreview(false); console.error(message); });
-          plr.addListener('playback_error', ({ message }) => { setusepreview(false); console.error(message); });
+          plr.addListener('initialization_error', ({ message }) => { setusepreview(true); console.error(message); });
+          plr.addListener('authentication_error', ({ message }) => { setusepreview(true); console.error(message); });
+          plr.addListener('account_error', ({ message }) => { setusepreview(true); console.error(message); });
+          plr.addListener('playback_error', ({ message }) => { setusepreview(true); console.error(message); });
 
           // Playback status updates
           plr.addListener('player_state_changed', state => {
@@ -72,7 +74,7 @@ export default function Player(props) {
           // if (plr) throw new Error('Never mind.');
           // Connect to the player!
           plr.connect();
-          setusepreview(false);
+          setusepreview(isMobileDevice());
         } catch (error) {
           console.log(error);
           setcanstart(true);
@@ -82,20 +84,25 @@ export default function Player(props) {
     if (tracklist && canplay) playTrack(tracklist.shift());
   });
   const playTrack = async (track) => {
-    // next.current.done();
+    next.current.reset();
     if(preview) preview.pause();
     setcanplay(false);
     setchecked(null);
     let recommended;
     let recommendations = await getRecommendations(track.id);
     console.log('track: ', track);
-    while ((!recommendations || !recommendations.tracks.length) && tracklist.length) {
+    let count = 0;
+    while ((!recommendations || recommendations.tracks.length < 5) && tracklist.length) {
       recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
       recommendations = await getRecommendations(recommended.id);
+      count++;
+      if(count > 10){
+        recommendations = await getRecommendations(recommended.id, 'pop');
+      }
     }
-    if (recommendations.tracks.length === 0) {
+    if (recommendations.tracks.length < 5) {
       console.log('no recommendations!', recommended);
-      recommendations = await getRecommendations(options.tracks[Math.floor(Math.random() * options.tracks.length)].id);
+      recommendations = await getRecommendations(recommended.id, 'pop');
     }
     console.log('recommendations: ', recommendations);
     // next.current.reset();
@@ -111,10 +118,11 @@ export default function Player(props) {
     // console.log("rand: ", rand);
     setseed(track);
     setcurtrack(rand);
-    next.current.start();
+    setTimeout(() => next.current.start(), 300);
   }
   const createTrackList = (trl) => {
     if (trl) {
+      console.log("items:",trl.items);
       let trks = trl.items.map(t => {
         return {
           id: t.id,
@@ -124,12 +132,15 @@ export default function Player(props) {
         }
       });
       shuffleArray(trks);
+      trks = trks.slice(0, plsize);
+      console.log("trks: ", trks);
       settracklist(trks);
     }
   }
-  const getRecommendations = async (seed) => {
-    let recommendations = await spotifyService.recommendations(seed, props.user.country);    
+  const getRecommendations = async (seed, genre) => {
+    let recommendations = await spotifyService.recommendations(seed, props.user.country, genre, 35 + tracklist.length);    
     if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => e.preview_url) || [];
+    console.log("filtered: ", recommendations.tracks.length);
     shuffleArray(recommendations.tracks);
     recommendations.tracks = recommendations.tracks.slice(0,5);
     return recommendations;
@@ -157,10 +168,10 @@ export default function Player(props) {
     props.user.score = scr;
     userService.update(props.user);
     if (!tracklist.length) {
+      settracklist(null);
       setTimeout(() => {
         setshowscore(true);
         setstarted(false);
-        settracklist(null);
         setcanplay(true);
       }, 3000);
     }
@@ -212,6 +223,7 @@ export default function Player(props) {
     setshowscore(false);
     setscore(0);
     setcombo(0);
+    setmaxcombo(0);
   }
   return (
     <div className="player_container">
@@ -221,7 +233,7 @@ export default function Player(props) {
         <span>Your score is {score}</span>{(combo ? ` ${combo}x`: '')}
       </div>
       {started ? renderCards() : (
-        <button className={`start start_button${(canstart && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
+        <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
       )}
       {(seed ? (
         <div className="score_info" >
@@ -233,7 +245,7 @@ export default function Player(props) {
                 ></Card> */
             <Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>
           }
-          <Next started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
+          <Next hide={!(tracklist || {}).length} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
         </div>
       ) : <div></div>)}
     </div>

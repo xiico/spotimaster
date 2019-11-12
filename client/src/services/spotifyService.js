@@ -6,9 +6,7 @@ export default {
             res = await axios.get('https://api.spotify.com/v1/me', getConfig());
         } catch (error) {
             console.log(error)
-            if(error.response.status === 401)
-            refreshToken();
-            return await axios.get('https://api.spotify.com/v1/me', getConfig()).data;
+            if(error.response.status === 401) refreshToken();
         }
         return res.data;
     },
@@ -26,33 +24,31 @@ export default {
             }
         } catch (error) {
             console.log(error)
-            if(error.response.status === 401)
-            refreshToken();
-            return await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, data, getConfig()).data;
+            if(error.response.status === 401) refreshToken();
         }
         return preview;
     },
-    recommendations: async (seed, market) => {
+    recommendations: async (seed, market, genre, popularity) => {
         let res;
+        console.log("popularity: ", popularity);
         try {
-            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=20&market=${market}&seed_tracks=${seed}&min_popularity=50`, getConfig());
+            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=20&market=${market}&seed_tracks=${seed}${(genre ? '&seed_genres=pop' : '')}&min_popularity=${popularity || 50}`, getConfig());
         } catch (error) {
             console.log(error)
-            if(error.response.status === 401)
-            refreshToken();
-            return await axios.get(`https://api.spotify.com/v1/recommendations?limit=20&market=${market}&seed_tracks=${seed}&min_popularity=50`, getConfig()).data;
+            if(error.response.status === 401) refreshToken();
         }
         return res.data;
     },
-    tracks: async (size) => {
+    tracks: async () => {
         let res;
+        let range = ['long_term', 'medium_term' , 'short_term'];
+        let r = range[Math.floor(Math.random() * 3)];
         try {
-            res = await axios.get(`https://api.spotify.com/v1/me/top/tracks?limit=${size}`, getConfig());
+            console.log(r);
+            res = await axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${r}&limit=50`, getConfig());
         } catch (error) {
             console.log(error)
-            if(error.response.status === 401)
-            refreshToken();
-            return await axios.get(`https://api.spotify.com/v1/me/top/tracks?limit=20`, getConfig()).data;
+            if(error.response.status === 401) refreshToken();
         }
         return res.data;
     },

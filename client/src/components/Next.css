@@ -1,19 +1,10 @@
-html, body {
-    height: 100%;
-  }
-  
-  body {
-    display: grid;
-    overflow: hidden;
-  }
-  
   .btn-circle-download {
     position: relative;
     height: 48px;
     width: 48px;
     margin: auto;
     border-radius: 100%;
-    background: #E8EAED;
+    /* background: #E8EAED; */
     overflow: hidden;
   }
   .btn-circle-download svg {
