@@ -16,7 +16,8 @@ export default {
       name: user.display_name,
       id: user.id,
       score: user.score,
-      picture: user.images[0].url
+      picture: user.images[0].url,
+      href: user.external_urls.spotify
     }
     let res = await axios.put(`/api/user/${user.id}`, data);
     return res.data;

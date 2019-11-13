@@ -8,7 +8,7 @@ export default {
             console.log(error)
             if(error.response.status === 401) refreshToken();
         }
-        return res.data;
+        return (res || {}).data;
     },
     play: async (device, track, position, usepreview) => {
         const data = {
@@ -37,7 +37,7 @@ export default {
             console.log(error)
             if(error.response.status === 401) refreshToken();
         }
-        return res.data;
+        return (res || {}).data;
     },
     tracks: async () => {
         let res;
@@ -50,7 +50,7 @@ export default {
             console.log(error)
             if(error.response.status === 401) refreshToken();
         }
-        return res.data;
+        return (res || {}).data;
     },
     refreshToken: refreshToken
 }

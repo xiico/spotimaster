@@ -20,7 +20,7 @@ export default function Player(props) {
   const [seed, setseed] = useState(true);
   const [checked, setchecked] = useState(null);
   const [correct, setcorrect] = useState(0);
-  const [canstart, setcanstart] = useState(false);
+  const [canstart, setcanstart] = useState(null);
   const [showscore, setshowscore] = useState(false);
   const [starttime, setstarttime] = useState(0);
   const [combo, setcombo] = useState(0);
@@ -33,6 +33,7 @@ export default function Player(props) {
 
   useEffect(() => {
     const existingScript = document.getElementById('player');
+    let plr;
     if (!existingScript && !usepreview) {
       const script = document.createElement('script');
       script.src = 'https://sdk.scdn.co/spotify-player.js'; // URL for the third-party library being loaded.
@@ -40,7 +41,6 @@ export default function Player(props) {
       document.body.appendChild(script);
       window.onSpotifyWebPlaybackSDKReady = () => {
         try {
-          let plr;
           const token = localStorage.access_token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
           plr = new window.Spotify.Player({
             name: 'Spotimaster Player',
@@ -63,6 +63,7 @@ export default function Player(props) {
           plr.addListener('ready', ({ device_id }) => {
             console.log('Ready with Device ID', device_id);
             setdevice(device_id);
+            localStorage.device_id = device_id;
             setcanstart(true);
           });
 
@@ -82,7 +83,12 @@ export default function Player(props) {
       };
     }
     if (tracklist && canplay) playTrack(tracklist.shift());
+    checkCanStart(existingScript);
   });
+  const checkCanStart = async (existingScript) => {    
+    if(!device && localStorage.device_id) setdevice(localStorage.device_id);
+    if (existingScript && (canstart === null && canstart === null)) setcanstart(true);
+  }
   const playTrack = async (track) => {
     next.current.reset();
     if(preview) preview.pause();
@@ -166,8 +172,8 @@ export default function Player(props) {
       date: new Date()
     }
     props.user.score = scr;
-    userService.update(props.user);
     if (!tracklist.length) {
+      userService.update(props.user);
       settracklist(null);
       setTimeout(() => {
         setshowscore(true);

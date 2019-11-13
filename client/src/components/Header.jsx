@@ -1,12 +1,15 @@
 import React from 'react';
 import './Header.css';
 import Login from "./Login";
+import Menu from "./Menu";
 export default function Header(props) {
     // console.log('header:',props.user);
+    const Link = props.link;
     return (
         <div>
+            <Menu link={props.link} />
             <ul>
-                <li><a href="#home">Spotimaster</a></li>
+                <li><Link to="/">Spotimaster</Link></li>
                 <li className="profile-picture">
                     {(
                         props.user

@@ -34,6 +34,7 @@ module.exports = (app) => {
     let user = await User.findOne({id:id});
     user.name = req.body.name;
     user.picure = req.body.picure;
+    user.href = req.body.href;
     user.scores.push(req.body.score);
     user.scores.sort((a, b) => {
         if(!a || !b) return;

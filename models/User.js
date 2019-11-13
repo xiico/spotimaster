@@ -12,6 +12,7 @@ const userSchema = new Schema({
         maxcombo: Number,
         date: Date
     }],
+    href: String,
     date: Date,
     picture: String,
     country: String

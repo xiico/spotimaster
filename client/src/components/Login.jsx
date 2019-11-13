@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import Cookies from 'js-cookie';
 
 // Components
-import Link from './Link';
+import Anchor from './Anchor';
 
 // import runtimeEnv from '@mars/heroku-js-runtime-env';
 import runtimeEnv from '../modules/runtimeEnv';
@@ -39,5 +39,5 @@ export default function Login() {
             state: state
         });
     }
-    return <Link href={'https://accounts.spotify.com/authorize?' + params()} text="Login" ></Link>
+    return <Anchor href={'https://accounts.spotify.com/authorize?' + params()} text="Login" ></Anchor>
 }

@@ -3,10 +3,12 @@ import queryString from 'query-string';
 import runtimeEnv from './modules/runtimeEnv';
 
 import spotifyService from './services/spotifyService';
-// import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 // import Game from './components/Game';
 import Header from "./components/Header";
-import Player from "./components/Player";
+import Home from "./components/Home";
+import Leaderboard from './components/Leaderboard';
+
 function App(props) {
   const [user, setuser] = useState(null);
   const env = runtimeEnv();
@@ -34,22 +36,20 @@ function App(props) {
     let user = await spotifyService.user();
     return user;
   }
-  const renderPlayer = player => {
-    return (
-      <Player user={user} ></Player>
-    );
-  };
   return (
-    <div className="App">
-      <Header user={user} ></Header>
-      <div className="player">
-        {user ? (
-          renderPlayer()
-        ) : (
-          <p>Loading player</p>
-        )}
+    <Router>
+      <div className="App">
+        <Header user={user} link={Link} ></Header>
+        <Switch>
+          <Route exact path="/">
+            <Home user={user} />
+          </Route>
+          <Route exact path="/leaderboard">
+            <Leaderboard user={user} />
+          </Route>
+        </Switch>        
       </div>
-    </div>
+    </Router>
   );
 }
 
