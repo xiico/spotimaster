@@ -61,15 +61,20 @@
     pointer-events: none;
   }
 
-  .score_info .seed_image{
+  .score_info .seed_image {
     float: left;
     width: 60px;
     padding-right: 5px;
+    background-color: #000;
   }
 
   .based_upon {
     position: absolute;
     margin-top: -22px;
+  }
+
+  .card .seed_image img {
+    width: 60px;
   }
   
   @media all and (max-width: 1200px) {

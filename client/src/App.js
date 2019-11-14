@@ -44,9 +44,7 @@ function App(props) {
           <Route exact path="/">
             <Home user={user} />
           </Route>
-          <Route exact path="/leaderboard">
-            <Leaderboard user={user} />
-          </Route>
+          <Route exact path="/leaderboard" render={(history) => <Leaderboard history={history} user={user} ></Leaderboard>} />
         </Switch>        
       </div>
     </Router>

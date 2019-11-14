@@ -41,11 +41,6 @@ nav ul li a:focus {
 	color: white;
 }
 
-nav ul li a:not(:only-child)::after {
-	padding-left: 4px;
-	content: ' ▾';
-}
-
 nav ul li ul li {
 	min-width: 190px;
 }
@@ -75,4 +70,10 @@ nav ul li ul li a:focus {
 
 ul:hover .dropdown {
   display: block;
+}
+
+span[role=img] {
+	display: inline-block;
+    padding: 3px;
+    font-size: 32px;
 }

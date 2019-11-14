@@ -19,6 +19,5 @@ button.start:active{
 @media all and (max-width:30em){
     button.start{
         display:block;
-        margin:0.4em auto;
     }
 }
