@@ -11,6 +11,7 @@ import Leaderboard from './components/Leaderboard';
 
 function App(props) {
   const [user, setuser] = useState(null);
+  const [preview, setpreview] = useState(false);
   const env = runtimeEnv();
   useEffect(()=>{
     if(!user){
@@ -42,9 +43,9 @@ function App(props) {
         <Header user={user} link={Link} ></Header>
         <Switch>
           <Route exact path="/">
-            <Home user={user} />
+            <Home user={user} preview={preview} setpreview={setpreview} />
           </Route>
-          <Route exact path="/leaderboard" render={(history) => <Leaderboard history={history} user={user} ></Leaderboard>} />
+          <Route exact path="/leaderboard" render={(history) => <Leaderboard history={history} user={user} preview={preview} ></Leaderboard>} />
         </Switch>        
       </div>
     </Router>

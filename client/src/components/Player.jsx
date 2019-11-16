@@ -8,6 +8,7 @@ import Card from "./Card";
 import Next from "./Next";
 import Score from "./Score"
 import isMobileDevice from "../modules/isMobileDevice";
+import Loading from './Loading';
 
 export default function Player(props) {
   const env = runtimeEnv();
@@ -27,9 +28,12 @@ export default function Player(props) {
   const [maxcombo, setmaxcombo] = useState(0);
   const [score, setscore] = useState(0);
   const [plsize] = useState(env.REACT_APP_PLSIZE || 20);
-  const [usepreview, setusepreview] = useState(isMobileDevice());
-  const [preview, setpreview] = useState(false);
+  const [usepreview, setusepreview] = useState(true);
+  // const [preview, setpreview] = useState(false);
   const next = useRef();
+  const preview = props.preview;
+  const setpreview = props.setpreview;
+  
 
   useEffect(() => {
     const existingScript = document.getElementById('player');
@@ -90,6 +94,7 @@ export default function Player(props) {
     if (existingScript && (canstart === null && canstart === null)) setcanstart(true);
   }
   const playTrack = async (track) => {
+    setoptions(null);
     next.current.reset();
     if(preview) preview.pause();
     setcanplay(false);
@@ -110,6 +115,7 @@ export default function Player(props) {
       console.log('no recommendations!', recommended);
       recommendations = await getRecommendations(recommended.id, 'pop');
     }
+    console.log('recommended: ', recommended);
     console.log('recommendations: ', recommendations);
     // next.current.reset();
     setcanplay(false);
@@ -144,7 +150,7 @@ export default function Player(props) {
     }
   }
   const getRecommendations = async (seed, genre) => {
-    let recommendations = await spotifyService.recommendations(seed, props.user.country, genre, 35 + tracklist.length);    
+    let recommendations = await spotifyService.recommendations(seed, props.user.country, genre, 31 + tracklist.length);    
     if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => e.preview_url) || [];
     console.log("filtered: ", recommendations.tracks.length);
     shuffleArray(recommendations.tracks);
@@ -216,7 +222,7 @@ export default function Player(props) {
           })}
         </div>)
         :
-        <div>Loading</div>
+        <div className="loading"><Loading /></div>
     );
   }
   const start = async () => {

@@ -32,7 +32,7 @@ export default {
         let res;
         console.log("popularity: ", popularity);
         try {
-            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=20&market=${market}&seed_tracks=${seed}${(genre ? '&seed_genres=pop' : '')}&min_popularity=${popularity || 50}`, getConfig());
+            res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=25&market=${market}&seed_tracks=${seed}${(genre ? '&seed_genres=pop' : '')}&min_popularity=${popularity || 50}`, getConfig());
         } catch (error) {
             console.log(error)
             if(error.response.status === 401) refreshToken();

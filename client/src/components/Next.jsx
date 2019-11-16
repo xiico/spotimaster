@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle , useRef, forwardRef } from 'react';
+import React, { useState, useImperativeHandle, useRef, forwardRef } from 'react';
 import './Next.css';
 const Next = forwardRef((props, ref) => {
     const [running, setrunning] = useState(false);
@@ -9,12 +9,14 @@ const Next = forwardRef((props, ref) => {
             clearTimeout(timers[0]);
             clearTimeout(timers[1]);
             setTimeout(function () {
-                btn.current.classList.add("done");
+                if (btn.current) btn.current.classList.add("done");
             }, 100);
             setTimeout(function () {
-                btn.current.classList.remove("load");
-                btn.current.classList.remove("done");
-                setrunning(false);
+                if (btn.current) {
+                    btn.current.classList.remove("load");
+                    btn.current.classList.remove("done");
+                    setrunning(false);
+                }
             }, 200);
             setrunning(false);
         },
@@ -27,11 +29,13 @@ const Next = forwardRef((props, ref) => {
                 let tmrs = [];
                 btn.current.classList.add("load");
                 tmrs[0] = setTimeout(function () {
-                    btn.current.classList.add("done");
+                    if (btn.current) btn.current.classList.add("done");
                 }, 30000);
                 tmrs[1] = setTimeout(function () {
-                    btn.current.classList.remove("load");
-                    btn.current.classList.remove("done");
+                    if (btn.current) {
+                        btn.current.classList.remove("load");
+                        btn.current.classList.remove("done");
+                    }
                     setrunning(false);
                 }, 30100);
                 setimers(tmrs);
@@ -40,7 +44,7 @@ const Next = forwardRef((props, ref) => {
         isrunning() {
             return running;
         }
-      }));
+    }));
     return (
         <div ref={btn} className={`btn-circle-download${(props.started ? "" : " hidden")}`} onClick={props.onClick}>
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
