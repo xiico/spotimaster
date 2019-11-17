@@ -33,11 +33,6 @@ nav ul li a {
 	padding: 0px 4px;
 }
 
-nav ul li a:hover,
-nav ul li a:focus {
-	background: rgb(12, 126, 63);
-}
-
 nav ul li a:focus {
 	color: white;
 }
@@ -52,16 +47,9 @@ nav ul li ul li a {
 	border-bottom: 1px solid #DDE0E7;
 }
 
-nav ul li ul li a:hover,
-nav ul li ul li a:focus {
-	background: rgb(0, 105, 18);
-	color: rgb(255, 255, 255);
-}
-
 .dropdown {
 	display: none;
 	position: absolute;
-	background: rgb(27, 94, 0);
 	box-shadow: 0 4px 10px rgba(10, 20, 30, .4);
 }
 

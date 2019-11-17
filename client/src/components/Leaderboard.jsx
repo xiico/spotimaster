@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./Leaderboard.css";
 import userService from '../services/userService';
+import format from '../modules/format';
 
 export default function Leaderboard(props) {
     if (props.preview) props.preview.pause();
@@ -23,7 +24,7 @@ export default function Leaderboard(props) {
                         </div>
                         <div className="leaderboard_profile_info">
                             <span className="leaderboard_profile_name">{u.name}{` - ${u.country}`}</span>
-                            <div className="leaderboard_profile_points"><span>{u.scores[0].points}</span></div>
+                            <div className="leaderboard_profile_points"><span>{ format(u.scores[0].points, ' ')}</span></div>
                             <div className="leaderboard_profile_stats">
                                 <span>{u.scores[0].hits} of {u.scores[0].total}</span>
                                 <span>Max Combo: {u.scores[0].maxcombo}</span>

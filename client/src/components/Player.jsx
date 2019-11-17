@@ -9,6 +9,7 @@ import Next from "./Next";
 import Score from "./Score"
 import isMobileDevice from "../modules/isMobileDevice";
 import Loading from './Loading';
+import format from '../modules/format';
 
 export default function Player(props) {
   const env = runtimeEnv();
@@ -242,7 +243,7 @@ export default function Player(props) {
       <div className={"counter" + (!started ? " hidden" : "")}>
         <span>{`Track ${plsize - ((tracklist || {}).length || 0)} of ${plsize}`}</span>
         <span> - </span>
-        <span>Your score is {score}</span>{(combo ? ` ${combo}x`: '')}
+        <span>Your score is { format(score, ' ')}</span>{(combo ? ` ${combo}x`: '')}
       </div>
       {started ? renderCards() : (
         <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>

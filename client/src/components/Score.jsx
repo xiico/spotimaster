@@ -1,12 +1,13 @@
 import React from 'react';
 import "./Score.css";
+import format from '../modules/format';
 
 export default function Score(props) {
     return (
         <div className={`container_score${(props.showscore ? " fade-in show" : "")}`}>
             <div className="overlay">
                 <div className="score head">
-                    <p>Final Score {props.score}</p>
+                    <p>Final Score { format(props.score, ' ')}</p>
                     <hr />
                 </div>
                 <div className="score hits">
