@@ -19,7 +19,7 @@ export default function Leaderboard(props) {
                     (<div className="leaderboard_profile" key={u.id}>
                         <div className="leaderboard_profile_rank">{(i+1)}</div>
                         <div className="leaderboard_picture" >
-                            <a target="_blank" href={`https://open.spotify.com/user/${u.id}`}><img className="leaderboard_profile_picture" alt="Profile" src={u.picture} /></a>
+                            <a target="_blank" rel="noopener noreferrer" href={`https://open.spotify.com/user/${u.id}`}><img className="leaderboard_profile_picture" alt="Profile" src={u.picture} /></a>
                         </div>
                         <div className="leaderboard_profile_info">
                             <span className="leaderboard_profile_name">{u.name}{` - ${u.country}`}</span>

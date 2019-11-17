@@ -19,14 +19,6 @@
         text-decoration: none;
     }
 
-    li a:hover:not(.active) {
-        background-color: rgb(0, 77, 4);
-    }
-
-    .active {
-        background-color: #4CAF50;
-    }
-
     .profile-picture{
         float: right
     }

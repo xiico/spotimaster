@@ -9,7 +9,7 @@ export default function Header(props) {
         <div>
             <Menu link={props.link} />
             <ul>
-                <li><Link to="/">Spotimaster</Link></li>
+                <li><Link to="/leaderboard">Leaderboard</Link></li>
                 <li className="profile-picture">
                     {(
                         props.user

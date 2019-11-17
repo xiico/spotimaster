@@ -5,11 +5,7 @@ export default function Menu(props){
     return (
         <nav className="nav">
             <ul>
-                <li className="drop"><span role="img" aria-label="Menu" >🎵</span>
-                    <ul className="dropdown">
-                        <li><Link to="/leaderboard">Leaderboard</Link></li>
-                    </ul>
-                </li>
+                <li className="drop"><Link to="/"><span role="img" aria-label="Menu" >🎵</span></Link></li>
             </ul>
         </nav>
     );
