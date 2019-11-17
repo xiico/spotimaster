@@ -113,7 +113,7 @@ export default function Player(props) {
     }
     if (recommendations.tracks.length < 5) {
       console.log('no recommendations!', recommended);
-      recommendations = await getRecommendations(recommended.id, 'pop');
+      recommendations = await getRecommendations(null, 'pop');
     }
     console.log('recommended: ', recommended);
     console.log('recommendations: ', recommendations);
@@ -128,7 +128,7 @@ export default function Player(props) {
       setpreview(p);
     }
     // console.log("rand: ", rand);
-    setseed(track);
+    setseed(recommended || track);
     setcurtrack(rand);
     setTimeout(() => next.current.start(), 300);
   }
@@ -240,7 +240,7 @@ export default function Player(props) {
   return (
     <div className="player_container">
       <div className={"counter" + (!started ? " hidden" : "")}>
-        <span>{`There are ${((tracklist || {}).length || 0)} left`}</span>
+        <span>{`Track ${plsize - ((tracklist || {}).length || 0)} of ${plsize}`}</span>
         <span> - </span>
         <span>Your score is {score}</span>{(combo ? ` ${combo}x`: '')}
       </div>

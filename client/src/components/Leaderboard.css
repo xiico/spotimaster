@@ -1,3 +1,56 @@
-div {
-    color: burlywood;
+.user_list {
+    width: 100%;
+    color: white;
+}
+
+.leaderboard_picture{
+    float: left;
+    height: 75px;
+    text-align: center;
+    width: 75px;
+    background-image: linear-gradient(#020, #056);
+}
+
+.leaderboard_profile_picture {
+    height: 75px;
+}
+
+.leaderboard_profile_info {
+    font-size: 12px;
+    background-color: #122;
+    height: 100%;
+}
+
+.leaderboard_profile {
+    margin: 10px auto;
+    width: 360px;
+    height: 75px;
+}
+
+.leaderboard_profile_name {
+    font-size: 1.7em;
+    margin-left: 8px;
+}
+
+.user_list a {
+    cursor: pointer;
+}
+
+.leaderboard_profile_points {
+    font-size: 14px;
+    font-weight: bolder;
+    color: orange;
+}
+.leaderboard_profile_points span {    
+    margin-left: 8px;
+}
+
+.leaderboard_profile_stats span {
+    margin-left: 8px;
+}
+
+.leaderboard_profile_rank {
+    float: left;
+    width: 35px;
+    text-align: center;
 }

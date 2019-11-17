@@ -9,7 +9,8 @@ module.exports = (app) => {
       let user = await User.findOne({ id: req.query.id });
       return res.status(200).send(user);
     } else {
-      let users = await User.find();
+      // let users = await User.find();
+      let users = await User.find({},{scores:{$slice:1}}).sort({'scores.0.points':-1});
       return res.status(200).send(users);
     }
   });

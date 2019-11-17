@@ -55,9 +55,8 @@
 
   .score_info .seed {
     height: 60px;
-    width: 100%;
+    width: 300px;
     margin-top: 90px;
-    margin-left: 20px;
     pointer-events: none;
   }
 
@@ -69,6 +68,8 @@
   }
 
   .based_upon {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
     position: absolute;
     margin-top: -22px;
   }

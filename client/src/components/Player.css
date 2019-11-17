@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css?family=Anton&display=swap');
 .player div{
     color:white;
 }
 .player_container {
     margin:auto;
     z-index: 0;
+    font-family: 'Anton', sans-serif;
     width: 100%;
     display: flex;
     justify-content: space-around;
