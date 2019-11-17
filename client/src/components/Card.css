@@ -56,7 +56,7 @@
   .score_info .seed {
     height: 60px;
     width: 300px;
-    margin-top: 90px;
+    margin-top: 110px;
     pointer-events: none;
   }
 
@@ -95,5 +95,8 @@
     .card_subtitle{
       font-size: 8px;
       padding-top: 5px;
+    }
+    .score_info .seed {
+      margin-top: 90px;
     }
   }

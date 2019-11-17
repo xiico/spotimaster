@@ -28,6 +28,7 @@ export default function Player(props) {
   const [combo, setcombo] = useState(0);
   const [maxcombo, setmaxcombo] = useState(0);
   const [score, setscore] = useState(0);
+  const [pscore, setpscore] = useState(0);
   const [plsize] = useState(env.REACT_APP_PLSIZE || 20);
   const [usepreview, setusepreview] = useState(true);
   // const [preview, setpreview] = useState(false);
@@ -95,6 +96,7 @@ export default function Player(props) {
     if (existingScript && (canstart === null && canstart === null)) setcanstart(true);
   }
   const playTrack = async (track) => {
+    setpscore(null);
     setoptions(null);
     next.current.reset();
     if(preview) preview.pause();
@@ -243,7 +245,8 @@ export default function Player(props) {
       <div className={"counter" + (!started ? " hidden" : "")}>
         <span>{`Track ${plsize - ((tracklist || {}).length || 0)} of ${plsize}`}</span>
         <span> - </span>
-        <span>Your score is { format(score, ' ')}</span>{(combo ? ` ${combo}x`: '')}
+        <span>Your score is </span><span className="points">{ format(score, ' ')}</span><span className="multiplier">{(combo ? ` ${combo}x`: '')}</span>
+        <span className="patial_score">{format(pscore || '', ' ')}</span>
       </div>
       {started ? renderCards() : (
         <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
@@ -263,9 +266,10 @@ export default function Player(props) {
   )
   function calculateScore(ccombo) {
     if(ccombo > maxcombo) setmaxcombo(ccombo);
-    let pscore = (30000 - Math.min(30000, new Date().getTime() - starttime)) * ccombo;
-    setscore(score + pscore);
-    return score + pscore;
+    let ps = (30000 - Math.min(30000, new Date().getTime() - starttime)) * ccombo;
+    setscore(score + ps);
+    setpscore(ps);
+    return score + ps;
   }
 
   function shuffleArray(array) {
