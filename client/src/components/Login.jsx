@@ -36,7 +36,8 @@ export default function Login() {
             // redirect_uri: `http://localhost:5000/callback`,
             // redirect_uri: `http://spotimaster.herokuapp.com/callback`,
             redirect_uri: `${env.REACT_APP_HOST_API}/callback`,
-            state: state
+            state: state,
+            show_dialog: true
         });
     }
     return <Anchor href={'https://accounts.spotify.com/authorize?' + params()} text="Login" ></Anchor>

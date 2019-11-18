@@ -6,6 +6,14 @@ import ProfilePicture from './ProfilePicutre';
 export default function Header(props) {
     // console.log('header:',props.user);
     const Link = props.link;
+    const logOut = () => {
+        localStorage.clear();
+        let location = window.location;
+        window.location = location;
+    }
+    const pointer = {
+        cursor: 'pointer'
+    }
     return (
         <div>
             <Menu link={props.link} />
@@ -17,7 +25,7 @@ export default function Header(props) {
                             ?
                             <div>
                                 <span className="profile-name">{props.user.display_name}</span>
-                                {( props.user.images[0] ? <img alt="Profile" className="profile-picture" src={props.user.images[0].url}></img> : <ProfilePicture size={'small'} />)}
+                                {( props.user.images[0] ? <img style={pointer} title="Log Out" alt="Profile" onClick={() => logOut()} className="profile-picture" src={props.user.images[0].url}></img> : <ProfilePicture size={'small'} />)}
                             </div>
                             :
                             <Login></Login>
