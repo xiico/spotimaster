@@ -49,6 +49,10 @@
     margin-left: 8px;
 }
 
+.leaderboard_profile_stats {
+    position: relative;
+}
+
 .leaderboard_profile_rank {
     float: left;
     width: 35px;

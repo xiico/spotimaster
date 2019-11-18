@@ -3,6 +3,7 @@ import "./Leaderboard.css";
 import userService from '../services/userService';
 import format from '../modules/format';
 import ProfilePicture from './ProfilePicutre';
+import Flag from './Flag';
 
 export default function Leaderboard(props) {
     if (props.preview) props.preview.pause();
@@ -31,11 +32,12 @@ export default function Leaderboard(props) {
                             </a>
                         </div>
                         <div className="leaderboard_profile_info">
-                            <span className="leaderboard_profile_name">{u.name}{` - ${u.country}`}</span>
+                            <span className="leaderboard_profile_name">{u.name}</span>
                             <div className="leaderboard_profile_points"><span>{ format((u.scores[0] || {}).points || 0, ' ')}</span></div>
                             <div className="leaderboard_profile_stats" style={!u.scores[0] ? hide : null } >
                                 <span>{(u.scores[0] || {}).hits} of {(u.scores[0] || {}).total}</span>
                                 <span>Max Combo: {(u.scores[0] || {}).maxcombo}</span>
+                                <Flag code={u.country} />
                             </div>
                         </div>
                     </div>)

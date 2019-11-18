@@ -11,7 +11,8 @@ export default function ProfilePicture(props) {
         marginTop: '4px'
     }
     const profileStyleBig = {
-        height: '75px'
+        height: '60px',
+        marginTop: '8px'
     }
     const picSize = size => {
         switch (size) {
