@@ -2,6 +2,7 @@ import React from 'react';
 import './Header.css';
 import Login from "./Login";
 import Menu from "./Menu";
+import ProfilePicture from './ProfilePicutre';
 export default function Header(props) {
     // console.log('header:',props.user);
     const Link = props.link;
@@ -16,7 +17,7 @@ export default function Header(props) {
                             ?
                             <div>
                                 <span className="profile-name">{props.user.display_name}</span>
-                                <img alt="Profile" className="profile-picture" src={props.user.images[0].url}></img>
+                                {( props.user.images[0] ? <img alt="Profile" className="profile-picture" src={props.user.images[0].url}></img> : <ProfilePicture />)}
                             </div>
                             :
                             <Login></Login>

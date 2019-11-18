@@ -66,7 +66,7 @@ module.exports = (app) => {
                 id: body.id,
                 points: 0,
                 date: new Date(),
-                picture: body.images[0].url,
+                picture: (body.images[0] || {}).url,
                 country: body.country
               });
             } 
