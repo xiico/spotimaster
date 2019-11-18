@@ -17,7 +17,7 @@ export default function Header(props) {
                             ?
                             <div>
                                 <span className="profile-name">{props.user.display_name}</span>
-                                {( props.user.images[0] ? <img alt="Profile" className="profile-picture" src={props.user.images[0].url}></img> : <ProfilePicture />)}
+                                {( props.user.images[0] ? <img alt="Profile" className="profile-picture" src={props.user.images[0].url}></img> : <ProfilePicture size={'small'} />)}
                             </div>
                             :
                             <Login></Login>
