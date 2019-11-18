@@ -76,7 +76,7 @@ module.exports = (app) => {
                 {
                   $set: {
                     name: body.display_name,
-                    picture: body.images[0].url,
+                    picture: (body.images[0] || {}).url,
                     country: body.country
                   }
                 });
