@@ -133,3 +133,20 @@
       height: 360px;
     }
   }
+
+  @media all and (max-width: 400px) {
+    .check_mark, .error_mark {
+      left: 24px;
+    }
+    .loading {
+      width: 100%;
+      text-align: center;
+      height: 324px;
+    }
+    .counter {
+      font-size: 13px;
+    }
+    .points {
+      font-size: 20px;
+    }
+  }

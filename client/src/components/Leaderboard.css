@@ -58,3 +58,9 @@
     width: 35px;
     text-align: center;
 }
+
+@media all and (max-width: 359px){
+    .leaderboard_profile {
+        width: 320px;
+    }
+  }
