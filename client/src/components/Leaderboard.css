@@ -51,6 +51,7 @@
 
 .leaderboard_profile_stats {
     position: relative;
+    display: flex;
 }
 
 .leaderboard_profile_rank {
