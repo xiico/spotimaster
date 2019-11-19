@@ -7,7 +7,7 @@ export default function Score(props) {
         <div className={`container_score${(props.showscore ? " fade-in show" : "")}`}>
             <div className="overlay">
                 <div className="score head">
-                    <p>Final Score { format(props.score, ' ')}</p>
+                    <p>Final Score: <span className="points">{ format(props.score, ' ')}</span></p>
                     <hr />
                 </div>
                 <div className="score hits">

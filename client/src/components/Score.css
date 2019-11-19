@@ -50,6 +50,7 @@
     line-height: 40px;
     transform: translateY(40px);
     transition: all 1.7s;
+    font-family: 'Anton', sans-serif;
   }
   .head hr {
     display: block;
@@ -92,6 +93,7 @@
   }
   .show .overlay .head {
     transform: translateY(0px);
+    
   }
   .show .overlay hr {
     width: 75px;
@@ -106,6 +108,10 @@
     transform: translateY(0px);
     transition-delay: 2.6s;
     opacity: 1;
+  }
+
+  .score .points {
+    color: orange;
   }
   
   @media all and (max-width: 1200px) {
