@@ -100,3 +100,16 @@
       margin-top: 90px;
     }
   }
+  
+  @media all and (max-width: 400px){
+    .card {
+        width: 106px;
+        height: 158px;
+        margin: 2px auto;
+    }
+    .card .card_title {
+      margin-top: -58px;
+      font-size: 9px;
+      margin-left: 3px;
+    }
+  }
