@@ -78,8 +78,8 @@
 
   .card .seed_image img {
     width: 60px;
-    max-height: 60px;
-    min-height: 60px;
+    max-height: 60px !important;
+    min-height: 60px !important;
   }
   
   @media all and (max-width: 1200px) {
