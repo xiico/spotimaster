@@ -1,4 +1,4 @@
-# Spotimaster
+# Trackguesser
 
 This is a guess the song game based upon your tracks from Spotify.
 

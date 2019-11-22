@@ -49,7 +49,7 @@ export default function Player(props) {
         try {
           const token = localStorage.access_token;// 'BQCRSz50hqnYbsxYTjlIEAcVmGN5gXoEMWdqrjmClL_YSQDjgvsT44qyi6MuKnky7DU94nFxBCTLQBGh7rzaWyfocV5OqzZ04mnoWqU77EDfsTT7N36Z0cgpwGFrAE3dABKnTUrTTq4tK2W4_hgSu5m8Wv3z7GpynKI';
           plr = new window.Spotify.Player({
-            name: 'Spotimaster Player',
+            name: 'Track Guesser Player',
             getOAuthToken: cb => { cb(token); }
           });
 
@@ -258,7 +258,7 @@ export default function Player(props) {
       </div>
       {started ? renderCards() : (
         <section style={message} className={`message ${((canstart || usepreview) && !showscore ? "" : " hidden")}`}>
-          <h1 style={header}>Spotimaster</h1>
+          <h1 style={header}>Trackguesser</h1>
           <p>This is a guess the song game based upon your tracks from Spotify.</p>
           <p>The app will pick 20 of your top songs and for each one of them, it will generate a list of five tracks.</p>
           <p>Then, it will play at random one of these five tracks.</p>
