@@ -8,7 +8,9 @@ export default function Home(props){
     };
     const message = {
       color: 'white',
-      padding: '10px'
+      padding: '20px',
+      margin: 'auto',
+      maxWidth: '500px'
     }
     return (
         <div className="player">
