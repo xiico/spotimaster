@@ -241,13 +241,6 @@ export default function Player(props) {
     setcombo(0);
     setmaxcombo(0);
   }
-  const message = {
-    padding: '15px',
-  }
-  const header ={    
-    fontWeight: '100'
-  }
-
   return (
     <div className="player_container">
       <div className={"counter" + (!started ? " hidden" : "")}>
@@ -256,16 +249,8 @@ export default function Player(props) {
         <span>Your score is </span><span className="points">{ format(score, ' ')}</span><span className="multiplier">{(combo ? ` ${combo}x`: '')}</span>
         <span className="patial_score">{format(pscore || '', ' ')}</span>
       </div>
-      {started ? renderCards() : (
-        <section style={message} className={`message ${((canstart || usepreview) && !showscore ? "" : " hidden")}`}>
-          <h1 style={header}>Trackguesser</h1>
-          <p>This is a guess the song game based upon your tracks from Spotify.</p>
-          <p>The app will pick 20 of your top songs and for each one of them, it will generate a list of five tracks.</p>
-          <p>Then, it will play at random one of these five tracks.</p>
-          <p>The objective of the game is to correctly guess which one of the tracks is playing.</p>
-          <p>Good Luck!</p>
-          <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
-        </section>
+      {started ? renderCards() : (        
+        <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
       )}
       {(seed ? (
         <div className="score_info" >
