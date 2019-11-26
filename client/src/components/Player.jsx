@@ -10,6 +10,7 @@ import Score from "./Score"
 import isMobileDevice from "../modules/isMobileDevice";
 import Loading from './Loading';
 import format from '../modules/format';
+import Select from './Select';
 
 export default function Player(props) {
   const env = runtimeEnv();
@@ -31,14 +32,18 @@ export default function Player(props) {
   const [pscore, setpscore] = useState(0);
   const [plsize] = useState(env.REACT_APP_PLSIZE || 20);
   const [usepreview, setusepreview] = useState(true);
+  const [genres, setgenres] = useState();
+  const [genre, setgenre] = useState();
   // const [preview, setpreview] = useState(false);
   const next = useRef();
+  const select = useRef();
   const preview = props.preview;
   const setpreview = props.setpreview;
   
 
   useEffect(() => {
     const existingScript = document.getElementById('player');
+    getGenres();
     let plr;
     if (!existingScript && !usepreview) {
       const script = document.createElement('script');
@@ -109,7 +114,7 @@ export default function Player(props) {
     let count = 0;
     while ((!recommendations || recommendations.tracks.length < 5) && tracklist.length) {
       recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
-      recommendations = await getRecommendations(recommended.id);
+      recommendations = await getRecommendations(recommended.id, null, 40 - (count * 4));
       count++;
       if(count > 10){
         recommendations = await getRecommendations(recommended.id, 'pop');
@@ -132,7 +137,7 @@ export default function Player(props) {
       setpreview(p);
     }
     // console.log("rand: ", rand);
-    setseed(recommended || track);
+    setseed((genre ? {track:genre, artist: ' '} : null) || recommended || track);
     setcurtrack(rand.id);
     setTimeout(() => next.current.start(), 300);
   }
@@ -153,8 +158,8 @@ export default function Player(props) {
       settracklist(trks);
     }
   }
-  const getRecommendations = async (seed, genre) => {
-    let recommendations = await spotifyService.recommendations(seed, props.user.country, genre, 31 + tracklist.length);    
+  const getRecommendations = async (seed, g, popularity) => {
+    let recommendations = await spotifyService.recommendations(seed, props.user.country, g || genre, popularity || (genre ? 11 : 31) + tracklist.length);    
     if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => e.preview_url) || [];
     console.log("filtered: ", recommendations.tracks.length);
     shuffleArray(recommendations.tracks);
@@ -174,7 +179,7 @@ export default function Player(props) {
     let cscore = calculateScore(ccombo);
     setchecked(track.id);
     let scr = {
-      mode: 'Normal',
+      mode: genre || 'Normal',
       hits: ccorrect,
       total: plsize,
       points: cscore,
@@ -230,6 +235,8 @@ export default function Player(props) {
     );
   }
   const start = async () => {
+    console.log("genre: ", select.current.getValue());
+    setgenre(select.current.getValue());
     let trks = await spotifyService.tracks(plsize);
     createTrackList(trks);
     // if(!canplay) playTrack(tracklist.shift());
@@ -241,6 +248,16 @@ export default function Player(props) {
     setcombo(0);
     setmaxcombo(0);
   }
+  const getGenres = async () => {
+    let res = await spotifyService.genres();
+
+    let gnrs = res.genres.map(g => {return {
+      text: g,
+      value: g
+    }});
+
+    setgenres(gnrs);
+  }
   return (
     <div className="player_container">
       <div className={"counter" + (!started ? " hidden" : "")}>
@@ -249,8 +266,14 @@ export default function Player(props) {
         <span>Your score is </span><span className="points">{ format(score, ' ')}</span><span className="multiplier">{(combo ? ` ${combo}x`: '')}</span>
         <span className="patial_score">{format(pscore || '', ' ')}</span>
       </div>
-      {started ? renderCards() : (        
-        <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
+      {started ? renderCards() : (
+        <div style={{margin:'auto'}}>          
+          <div><span>You can use your own songs or pick a genre</span></div> 
+          <div className="div_start">
+            <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
+            <Select ref={select} text="Choose an genre" items={genres} ></Select>
+          </div>
+        </div>
       )}
       {(seed ? (
         <div className="score_info" >

@@ -104,6 +104,11 @@
     font-size: 14px;
   }
 
+  .div_start{    
+    display: flex;
+    justify-content: center;
+  }
+
   @media all and (max-width: 1520px) {
     .cards_list {
       width: 80%;
