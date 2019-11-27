@@ -45,7 +45,7 @@ export default {
         let range = ['long_term', 'medium_term' , 'short_term'];
         let r = range[Math.floor(Math.random() * 3)];
         try {
-            console.log(r);
+            log(r);
             if(!g) res = await axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${r}&limit=50`, getConfig());
             else res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=50&seed_genres=${g}&min_popularity=10`, getConfig());
         } catch (error) {
