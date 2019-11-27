@@ -39,11 +39,8 @@ export default function Player(props) {
   const select = useRef();
   const preview = props.preview;
   const setpreview = props.setpreview;
-  
-
   useEffect(() => {
     const existingScript = document.getElementById('player');
-    getGenres();
     let plr;
     if (!existingScript && !usepreview) {
       const script = document.createElement('script');
@@ -66,13 +63,13 @@ export default function Player(props) {
 
           // Playback status updates
           plr.addListener('player_state_changed', state => {
-            console.log(state);
+            log(state);
             if (state) setcurtrack(state.track_window.current_track);
           });
 
           // Ready
           plr.addListener('ready', ({ device_id }) => {
-            console.log('Ready with Device ID', device_id);
+            log('Ready with Device ID', device_id);
             setdevice(device_id);
             localStorage.device_id = device_id;
             setcanstart(true);
@@ -80,7 +77,7 @@ export default function Player(props) {
 
           // Not Ready
           plr.addListener('not_ready', ({ device_id }) => {
-            console.log('Device ID has gone offline', device_id);
+            log('Device ID has gone offline', device_id);
           });
 
           // if (plr) throw new Error('Never mind.');
@@ -88,13 +85,14 @@ export default function Player(props) {
           plr.connect();
           setusepreview(isMobileDevice());
         } catch (error) {
-          console.log(error);
+          log(error);
           setcanstart(true);
         }
       };
     }
     if (tracklist && canplay) playTrack(tracklist.shift());
     checkCanStart(existingScript);
+    if(!genres) getGenres();
   });
   const checkCanStart = async (existingScript) => {    
     if(!device && localStorage.device_id) setdevice(localStorage.device_id);
@@ -110,7 +108,7 @@ export default function Player(props) {
     setchecked(null);
     let recommended;
     let recommendations = await getRecommendations(track.id);
-    console.log('track: ', track);
+    log('track: ', track);
     let count = 0;
     while ((!recommendations || recommendations.tracks.length < 5) && tracklist.length) {
       recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
@@ -121,11 +119,11 @@ export default function Player(props) {
       }
     }
     if (recommendations.tracks.length < 5) {
-      console.log('no recommendations!', recommended);
+      log('no recommendations!', recommended);
       recommendations = await getRecommendations(null, 'pop');
     }
-    console.log('recommended: ', recommended);
-    console.log('recommendations: ', recommendations);
+    log('recommended: ', recommended);
+    log('recommendations: ', recommendations);
     // next.current.reset();
     setcanplay(false);
     setstarttime(new Date().getTime());
@@ -137,31 +135,32 @@ export default function Player(props) {
       setpreview(p);
     }
     // console.log("rand: ", rand);
-    setseed((genre ? {track:genre, artist: ' '} : null) || recommended || track);
+    setseed(recommended || track);
     setcurtrack(rand.id);
     setTimeout(() => next.current.start(), 300);
   }
   const createTrackList = (trl) => {
     if (trl) {
-      console.log("items:",trl.items);
-      let trks = trl.items.map(t => {
+      log("items:", (trl.items || trl.tracks));
+      let trks = (trl.items || trl.tracks).map(t => {
         return {
           id: t.id,
           artist: t.artists.map(e => ` ${e.name}`).toString().trimStart(),
           image: (t.album.images.find(a => a.width === 300) || { url: '' }).url,
-          track: t.name
+          track: t.name,
+          popularity: t.popularity
         }
       });
-      shuffleArray(trks);
+      trks.sort((a,b) => b.popularity - a.popularity);
       trks = trks.slice(0, plsize);
-      console.log("trks: ", trks);
+      log("trks: ", trks);
       settracklist(trks);
     }
   }
   const getRecommendations = async (seed, g, popularity) => {
     let recommendations = await spotifyService.recommendations(seed, props.user.country, g || genre, popularity || (genre ? 11 : 31) + tracklist.length);    
     if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => e.preview_url) || [];
-    console.log("filtered: ", recommendations.tracks.length);
+    log("filtered: ", recommendations.tracks.length);
     shuffleArray(recommendations.tracks);
     recommendations.tracks = recommendations.tracks.slice(0,5);
     return recommendations;
@@ -235,9 +234,10 @@ export default function Player(props) {
     );
   }
   const start = async () => {
-    console.log("genre: ", select.current.getValue());
-    setgenre(select.current.getValue());
-    let trks = await spotifyService.tracks(plsize);
+    log("genre: ", select.current.getValue());
+    let g = select.current.getValue();
+    setgenre(g);
+    let trks = await spotifyService.tracks(g);
     createTrackList(trks);
     // if(!canplay) playTrack(tracklist.shift());
     setcorrect(0);
@@ -250,13 +250,17 @@ export default function Player(props) {
   }
   const getGenres = async () => {
     let res = await spotifyService.genres();
+    log("genres: ", res);
+    if (res) {
+      let gnrs = res.genres.map(g => {
+        return {
+          text: g,
+          value: g
+        }
+      });
 
-    let gnrs = res.genres.map(g => {return {
-      text: g,
-      value: g
-    }});
-
-    setgenres(gnrs);
+      setgenres(gnrs);
+    }
   }
   return (
     <div className="player_container">
@@ -282,7 +286,7 @@ export default function Player(props) {
           {(started ? <Card  seed={seed}
                   artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
                   image={seed.album ? seed.album.images.find(a => a.width === 300).url : seed.image} 
-                  track={seed.name || seed.track}
+                  track={seed.name || seed.track} genre={genre}
                 ></Card> : "")}
         </div>
       ) : <div></div>)}
@@ -301,5 +305,11 @@ export default function Player(props) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
+  }
+}
+function log(){
+  if(process.env.NODE_ENV === "development")
+  {
+    console.log(...arguments);
   }
 }
