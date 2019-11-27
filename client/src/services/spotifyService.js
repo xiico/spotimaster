@@ -47,7 +47,7 @@ export default {
         try {
             log(r);
             if(!g) res = await axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${r}&limit=50`, getConfig());
-            else res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=50&seed_genres=${g}&min_popularity=10`, getConfig());
+            if(g || !res.data.items[0]) res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=50&seed_genres=${g || 'pop'}&min_popularity=10`, getConfig());
         } catch (error) {
             console.log(error)
             if(error.response.status === 401) refreshToken();
