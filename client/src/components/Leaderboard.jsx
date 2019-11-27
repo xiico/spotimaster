@@ -33,7 +33,7 @@ export default function Leaderboard(props) {
                         </div>
                         <div className="leaderboard_profile_info">
                             <span className="leaderboard_profile_name">{u.name}</span>
-                            <div className="leaderboard_profile_points"><span>{format((u.scores[0] || {}).points || 0, ' ')}</span><span style={{color: 'grey'}} >{`${u.scores[0].mode !== 'Normal' ? `(${u.scores[0].mode})` : '' }`}</span></div>
+                            <div className="leaderboard_profile_points"><span>{format((u.scores[0] || {}).points || 0, ' ')}</span><span style={{color: 'grey'}} >{`${(u.scores[0] || {}).mode && (u.scores[0] || {}).mode !== 'Normal' ? `(${(u.scores[0] || {}).mode})` : '' }`}</span></div>
                             <div className="leaderboard_profile_stats" style={!u.scores[0] ? hide : null} >
                                 <span>{(u.scores[0] || {}).hits} of {(u.scores[0] || {}).total}</span>
                                 <span>Max Combo: {(u.scores[0] || {}).maxcombo}</span>
