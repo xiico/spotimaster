@@ -140,7 +140,7 @@ export default function Player(props) {
     setcurtrack(rand.id);
     setTimeout(() => next.current.start(), 300);
   }
-  const createTrackList = (trl) => {
+  const createTrackList = (trl, g) => {
     if (trl) {
       log("items:", (trl.items || trl.tracks));
       let trks = (trl.items || trl.tracks).map(t => {
@@ -152,8 +152,9 @@ export default function Player(props) {
           popularity: t.popularity
         }
       });
-      trks.sort((a,b) => b.popularity - a.popularity);
+      shuffleArray(trks);
       trks = trks.slice(0, plsize);
+      if (g) trks.sort((a,b) => b.popularity - a.popularity);
       log("trks: ", trks);
       settracklist(trks);
     }
@@ -239,7 +240,7 @@ export default function Player(props) {
     let g = select.current.getValue();
     setgenre(g);
     let trks = await spotifyService.tracks(g);
-    createTrackList(trks);
+    createTrackList(trks, g);
     // if(!canplay) playTrack(tracklist.shift());
     setcorrect(0);
     if (started) playTrack(tracklist.shift());
