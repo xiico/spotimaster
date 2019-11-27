@@ -11,6 +11,7 @@ import isMobileDevice from "../modules/isMobileDevice";
 import Loading from './Loading';
 import format from '../modules/format';
 import Select from './Select';
+import log from '../modules/log';
 
 export default function Player(props) {
   const env = runtimeEnv();
@@ -305,11 +306,5 @@ export default function Player(props) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
-  }
-}
-function log(){
-  if(process.env.NODE_ENV === "development")
-  {
-    console.log(...arguments);
   }
 }

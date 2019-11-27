@@ -1,4 +1,5 @@
 import axios from 'axios';
+import log from '../modules/log';
 export default {
     user: async () => {
         let res;
@@ -30,7 +31,7 @@ export default {
     },
     recommendations: async (seed, market, genre, popularity) => {
         let res;
-        console.log("popularity: ", popularity);
+        log("popularity: ", popularity);
         try {
             res = await axios.get(`https://api.spotify.com/v1/recommendations?limit=25&market=${market}${seed ? `&seed_tracks=${seed}` : ''}${(genre ? `&seed_genres=${genre}` : '')}&min_popularity=${popularity || 50}`, getConfig());
         } catch (error) {

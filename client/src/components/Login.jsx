@@ -8,6 +8,7 @@ import Anchor from './Anchor';
 
 // import runtimeEnv from '@mars/heroku-js-runtime-env';
 import runtimeEnv from '../modules/runtimeEnv';
+import log from '../modules/log';
 
 export default function Login() {
     // const [users, setusers] = useState(null);
@@ -26,7 +27,7 @@ export default function Login() {
 
     useEffect(() => {
         Cookies.set(stateKey, state);
-        console.log('.env: ',env.REACT_APP_HOST_CLIENT);
+        log('.env: ',env.REACT_APP_HOST_CLIENT);
     })
     const params = () => {
         return queryString.stringify({
