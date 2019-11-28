@@ -188,9 +188,10 @@ export default function Player(props) {
       maxcombo: Math.max(maxcombo, ccombo),
       date: new Date()
     }
-    leaderboardService.insert(scr);
+    props.user.score = scr;
     if (!tracklist.length) {
       userService.update(props.user);
+      leaderboardService.insert(scr, props.user.id);
       settracklist(null);
       setTimeout(() => {
         setshowscore(true);

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
-const Leaderboard = mongoose.model('leaderboards');
 
 module.exports = (app) => {
 

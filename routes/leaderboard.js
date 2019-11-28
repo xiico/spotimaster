@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Leaderboard = mongoose.model('leaderboards');
+const User = mongoose.model('users');
 
 module.exports = (app) => {
     app.get('/api/leaderboard/:genre?', async (req, res) => {
@@ -10,8 +11,9 @@ module.exports = (app) => {
         return res.status(200).send(result);
     });
     app.post(`/api/leaderboard/:id`, async (req, res) => {
-        let score = req.body.score;
-        let user = await User.findOne({id:id});
+        console.log('post leaderboard:', req.params, req.body);
+        let score = req.body;
+        let user = await User.findOne({id: req.params.id});
         score.user = user._id;
         Leaderboard.create(score).catch(error => {
             return res.status(500).send(error);

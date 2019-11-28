@@ -8,7 +8,7 @@ export default {
   },  
   insert: async (score, id) => {
     // console.log('user_service_id:',id);
-    let res = await axios.put(`/api/leaderboard/${id}`, score);
+    let res = await axios.post(`/api/leaderboard/${id}`, score);
     return res.data;
   }
 }
