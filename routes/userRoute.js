@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
+const Leaderboard = mongoose.model('leaderboards');
 
 module.exports = (app) => {
 
@@ -36,13 +37,13 @@ module.exports = (app) => {
     user.name = req.body.name;
     user.picure = req.body.picure;
     user.href = req.body.href;
-    user.scores.push(req.body.score);
-    user.scores.sort((a, b) => {
-        if(!a || !b) return;
-        return b.points - a.points;
-      }
-    );
-    delete req.body.id;
+    // user.scores.push(req.body.score);
+    // user.scores.sort((a, b) => {
+    //     if(!a || !b) return;
+    //     return b.points - a.points;
+    //   }
+    // );
+    // delete req.body.id;
     user.save(error => {
       if (error) res.status(500).send({ error: error });
       console.log('user saved');

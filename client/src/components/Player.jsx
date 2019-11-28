@@ -3,6 +3,7 @@ import './Player.css';
 import './Button.css';
 import spotifyService from '../services/spotifyService';
 import userService from '../services/userService';
+import leaderboardService from '../services/leaderboardService';
 import runtimeEnv from '../modules/runtimeEnv';
 import Card from "./Card";
 import Next from "./Next";
@@ -180,14 +181,14 @@ export default function Player(props) {
     let cscore = calculateScore(ccombo);
     setchecked(track.id);
     let scr = {
-      mode: genre || 'Normal',
+      genre: genre || 'Normal',
       hits: ccorrect,
       total: plsize,
       points: cscore,
       maxcombo: Math.max(maxcombo, ccombo),
       date: new Date()
     }
-    props.user.score = scr;
+    leaderboardService.insert(scr);
     if (!tracklist.length) {
       userService.update(props.user);
       settracklist(null);

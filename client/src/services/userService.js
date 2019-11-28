@@ -15,7 +15,7 @@ export default {
     const data = {
       name: user.display_name,
       id: user.id,
-      score: user.score,
+      // score: user.score,
       picture: (user.images[0] || {}).url,
       href: user.external_urls.spotify
     }

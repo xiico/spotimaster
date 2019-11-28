@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 require('./models/User');
+require('./models/Leaderboard');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json())
 .use(cookieParser());
 require('./routes/userRoute')(app);
 require('./routes/authorization')(app);
+require('./routes/leaderboard')(app);
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
