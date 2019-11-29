@@ -1,0 +1,74 @@
+.tabs-nav {
+    display: flex;
+    justify-content: center;
+    background-color: #888;
+  }
+  
+.tabs-nav button {
+    font-family: 'Anton', sans-serif;
+    background-color: #888;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+    font-size: 17px;
+    width: 120px;
+}
+
+.tabs-nav button:hover {
+    background-color: #ddd;
+}
+
+.tabs-nav button.active {
+    background-color: #000;
+    color: white;
+}
+
+.tabcontent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.tabs-nav ul {
+    list-style-type: none;
+    margin: 0;
+}
+.tabs-nav li {
+    padding: 0;
+}
+.genre-entry {
+    background-color: #333;
+    width: 320px;
+    margin: 10px;
+    height: 160px;;
+}
+
+.genre-entry img, .genre-entry svg {
+    height: 40px;
+    float: left;
+}
+.genre-name {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+}
+.tabs-user{
+    height: 40px;
+    margin: 5px;
+}
+.tabs-user-name{
+    display: inline;
+    padding-left: 5px;
+    color: white;
+}
+.tabs-user-points{
+    display: table-cell;
+    padding-left: 5px;
+    font-size: 12px;
+    font-weight: bolder;
+    color: orange;
+}

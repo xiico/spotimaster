@@ -6,9 +6,7 @@ export default function ProfilePicture(props) {
     const profileStyleSmall = {
         height: '30px',
         backgroundColor: 'black',
-        padding: '6px',
-        marginRight: '4px',
-        marginTop: '4px'
+        padding: '5px'
     }
     const profileStyleBig = {
         height: '60px',
