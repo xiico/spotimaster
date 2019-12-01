@@ -39,10 +39,12 @@
     padding: 0;
 }
 .genre-entry {
-    background-color: #333;
+    background-color: #122;
     width: 320px;
     margin: 10px;
-    height: 160px;;
+    height: 200px;
+    background-image: url(genrebg.png);
+    background-size: contain;
 }
 
 .genre-entry img, .genre-entry svg {
@@ -51,14 +53,19 @@
 }
 .genre-name {
     display: block;
-    width: 100%;
+    width: 90%;
+    margin: 4px auto;
     text-align: center;
     color: white;
     font-weight: 700;
+    line-height: 35px;
+    background-color: rgba(255,255,255,0.1);
 }
 .tabs-user{
     height: 40px;
     margin: 5px;
+    background-color: rgba(0,0,0,0.8);
+    padding: 4px;
 }
 .tabs-user-name{
     display: inline;

@@ -36,6 +36,9 @@ export default function Leaderboard(props) {
     const hide = {
         display: 'none'
     }
+    const roundPicture = {
+        borderRadius: '50%'
+    }
 
     return (
         <Tabs default={0}>
@@ -72,7 +75,7 @@ export default function Leaderboard(props) {
                                 {g.scores.map((s, k) => {
                                     return (
                                         <div key={k} className="tabs-user">
-                                            {s.user.picture ? <img alt="User" src={s.user.picture}/>:<ProfilePicture />}
+                                            {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture}/>:<ProfilePicture />}
                                             <div className="tabs-user-name" >{s.user.name}</div>
                                             <div className="tabs-user-points" >{format(s.points, ' ')}</div>
                                         </div>
