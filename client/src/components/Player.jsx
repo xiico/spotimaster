@@ -279,7 +279,7 @@ export default function Player(props) {
           <div><span>You can use your own songs or pick a genre</span></div> 
           <div className="div_start">
             <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
-            <Select ref={select} text="Choose an genre" items={genres} ></Select>
+            <Select ref={select} text="Choose an genre" items={genres} value={genre} ></Select>
           </div>
         </div>
       )}

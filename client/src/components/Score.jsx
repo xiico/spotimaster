@@ -14,7 +14,7 @@ export default function Score(props) {
                     <p className="old">{props.hits} of {props.total} Tracks - {`Max combo: ${props.maxcombo}`}</p>
                 </div>
                 <div className="score again">
-                    <i>▶</i>
+                    <span>▶</span>
                     <span onClick={props.onClick}>Play Again</span>
                 </div>
             </div>

@@ -1,19 +1,23 @@
 import React, {useState, useImperativeHandle, useRef, forwardRef} from 'react';
 import "./Select.css";
+// import log from "../modules/log";
 const Select = forwardRef((props, ref) => {
-    const [state,setstate] = useState(props.default);
+    const [value,setvalue] = useState(props.default || props.value);
     const select = useRef();
     const handleChange = (e) => {
-        setstate(e.target.options[e.target.selectedIndex].value);
+        setvalue(e.target.options[e.target.selectedIndex].value);
     }
-    useImperativeHandle(ref, () => ({
+    useImperativeHandle(ref, (e) => ({
         getValue() {
-            return state;
+            return value;
+        },
+        setValue(v) {
+            setvalue(v);
         }
     }));
     return (
         <div className="select">
-            <select ref={select} defaultValue={props.default} onChange={handleChange}>
+            <select ref={select} defaultValue={props.default} value={value} onChange={handleChange}>
                 <option key={-1} value={props.default}>{props.text ? props.text : "Choose an option"}</option>
                 {(props.items || []).map((item,i) => {
                     return <option key={i} value={item.value}>{item.text}</option>
