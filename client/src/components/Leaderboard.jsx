@@ -7,7 +7,7 @@ import Flag from './Flag';
 import {Tab, Tabs} from './tabs';
 
 export default function Leaderboard(props) {
-    if (props.preview) props.preview.pause();
+    // if (props.preview) props.preview.pause();
     const [users, setusers] = useState();
     const [genres, setgenres] = useState();
     // useEffect(() => {

@@ -28,6 +28,11 @@
         padding: 6px;
     }
 
+    .profile-picture svg {
+        padding: 5px !important;
+        margin: 3px 3px 0;
+    }
+
     .profile-name{        
         display: block;
         color: white;

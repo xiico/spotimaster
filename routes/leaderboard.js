@@ -171,7 +171,7 @@ const byGenre = (genre) => {
         }
     },
     {
-        $out: "leaderboards"
+        // $out: "leaderboards"
     }
 ])
 
