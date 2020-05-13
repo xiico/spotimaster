@@ -8,7 +8,17 @@ const leaderboardSchema = new Schema({
     total: Number,
     points: Number,
     maxcombo: Number,
-    date: Date
+    date: Date,
+    songs: [
+        {
+            id: String,
+            track: String,
+            artist: String,
+            image: String,
+            result: String,
+            time: Number
+        }
+    ]
 })
 
 mongoose.model('leaderboards', leaderboardSchema);

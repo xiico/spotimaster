@@ -36,6 +36,7 @@ export default function Player(props) {
   const [usepreview, setusepreview] = useState(true);
   const [genres, setgenres] = useState();
   const [genre, setgenre] = useState();
+  const [answears, setanswears] = useState([]);
   // const [preview, setpreview] = useState(false);
   const next = useRef();
   const select = useRef();
@@ -132,6 +133,7 @@ export default function Player(props) {
     shuffleArray(recommendations.tracks);
     setoptions(recommendations);
     var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
+    setanswears([...answears, getSimpleTrack(rand)])
     if (rand) {
       let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview);
       setpreview(p);
@@ -145,19 +147,23 @@ export default function Player(props) {
     if (trl) {
       log("items:", (trl.items || trl.tracks));
       let trks = (trl.items || trl.tracks).map(t => {
-        return {
-          id: t.id,
-          artist: t.artists.map(e => ` ${e.name}`).toString().trimStart(),
-          image: (t.album.images.find(a => a.width === 300) || { url: '' }).url,
-          track: t.name,
-          popularity: t.popularity
-        }
+        return getSimpleTrack(t);
       });
       shuffleArray(trks);
       trks = trks.slice(0, plsize);
       if (g) trks.sort((a,b) => b.popularity - a.popularity);
       log("trks: ", trks);
       settracklist(trks);
+    }
+  }
+  const getSimpleTrack = t => {
+    return {
+      id: t.id,
+      artist: t.artists.map(e => ` ${e.name}`).toString().trimStart(),
+      image: (t.album.images.find(a => a.width === 300) || { url: '' }).url,
+      track: t.name,
+      popularity: t.popularity,
+      result: 'skipped'
     }
   }
   const getRecommendations = async (seed, g, popularity) => {
@@ -172,11 +178,16 @@ export default function Player(props) {
     next.current.reset();
     let ccombo = combo; // current combo;
     let ccorrect = correct;
+    let trk = answears.find(e => e.id === curtrack);
+    trk.result = 'miss';
+    trk.time = new Date().getTime() - starttime;
     if (curtrack === track.id) {
       ccombo++;
       ccorrect = correct + 1;
       setcorrect(ccorrect);
+      trk.result = 'hit';
     } else ccombo = 0;
+    setanswears([...answears]);
     setcombo(ccombo);
     let cscore = calculateScore(ccombo);
     setchecked(track.id);
@@ -186,7 +197,8 @@ export default function Player(props) {
       total: plsize,
       points: cscore,
       maxcombo: Math.max(maxcombo, ccombo),
-      date: new Date()
+      date: new Date(),
+      songs: answears
     }
     props.user.score = scr;
     if (!tracklist.length) {
