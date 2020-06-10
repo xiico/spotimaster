@@ -202,6 +202,7 @@ export default function Player(props) {
     }
     props.user.score = scr;
     if (!tracklist.length) {
+      setanswears([]);
       userService.update(props.user);
       leaderboardService.insert(scr, props.user.id);
       settracklist(null);
