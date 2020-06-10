@@ -263,6 +263,7 @@ export default function Player(props) {
     setscore(0);
     setcombo(0);
     setmaxcombo(0);
+    setanswears([]);
   }
   const getGenres = async () => {
     let res = await spotifyService.genres();
