@@ -166,9 +166,13 @@ export default function Player(props) {
       result: 'skipped'
     }
   }
+  const checkRecommendation = function(track) {
+      // log('repeated:', answears.find(e => e.result === "hit" && e.id == track.id));
+      return track.preview_url && !answears.find(e => e.result === "hit" && e.id == track.id);
+  }
   const getRecommendations = async (seed, g, popularity) => {
     let recommendations = await spotifyService.recommendations(seed, props.user.country, g || genre, popularity || (genre ? 11 : 31) + tracklist.length);    
-    if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => e.preview_url) || [];
+    if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => checkRecommendation(e)) || [];
     log("filtered: ", recommendations.tracks.length);
     shuffleArray(recommendations.tracks);
     recommendations.tracks = recommendations.tracks.slice(0,5);
