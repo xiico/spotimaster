@@ -166,9 +166,10 @@ export default function Player(props) {
       result: 'skipped'
     }
   }
-  const checkRecommendation = function(track) {
-      // log('repeated:', answears.find(e => e.result === "hit" && e.id == track.id));
-      return track.preview_url && !answears.find(e => e.result === "hit" && e.id == track.id);
+  const checkRecommendation = function (track) {
+    let repeated = answears.find(e => e.result === "hit" && e.id === track.id);
+    if(repeated) log('repeated:', repeated);
+    return track.preview_url && !repeated;
   }
   const getRecommendations = async (seed, g, popularity) => {
     let recommendations = await spotifyService.recommendations(seed, props.user.country, g || genre, popularity || (genre ? 11 : 31) + tracklist.length);    
@@ -259,6 +260,11 @@ export default function Player(props) {
     let g = select.current.getValue();
     setgenre(g);
     let trks = await spotifyService.tracks(g);
+    while (trks.items.length < 20) {
+      shuffleArray(trks.items);
+      let recommendations = await getRecommendations(trks.items[0].id, null, 25);
+      trks.items = trks.items.concat(recommendations.tracks);
+    }
     createTrackList(trks, g);
     // if(!canplay) playTrack(tracklist.shift());
     setcorrect(0);
