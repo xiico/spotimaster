@@ -50,7 +50,7 @@ export default function Leaderboard(props) {
                                 <div className="leaderboard_profile_rank">{(i + 1)}</div>
                                 <div className="leaderboard_picture" >
                                     <a target="_blank" rel="noopener noreferrer" href={`https://open.spotify.com/user/${u.id}`}>
-                                        {(u.picture ? <img className="leaderboard_profile_picture" alt="Profile" src={u.picture} /> : <ProfilePicture size={'big'} />)}
+                                        {(u.picture ? <img className="leaderboard_profile_picture" alt="Profile" src={u.picture} onError={(e) => {if (e.target.src != '/img/user.png') e.target.src = '/img/user.png';}} /> : <ProfilePicture size={'big'} />)}
                                     </a>
                                 </div>
                                 <div className="leaderboard_profile_info">
@@ -75,7 +75,7 @@ export default function Leaderboard(props) {
                                 {g.scores.map((s, k) => {
                                     return (
                                         <div key={k} className="tabs-user">
-                                            {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture}/>:<ProfilePicture />}
+                                            {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture} onError={(e) => {if (e.target.src != '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture />}
                                             <div className="tabs-user-name" >{s.user.name}</div>
                                             <div className="tabs-user-points" >{format(s.points, ' ')}</div>
                                         </div>
