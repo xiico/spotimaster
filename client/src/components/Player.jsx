@@ -260,6 +260,7 @@ export default function Player(props) {
     let g = select.current.getValue();
     setgenre(g);
     let trks = await spotifyService.tracks(g);
+    if (!trks.items) trks.items = trks.tracks;
     while (trks.items.length < 20) {
       shuffleArray(trks.items);
       let recommendations = await getRecommendations(trks.items[0].id, null, 25);
