@@ -172,12 +172,17 @@ export default function Player(props) {
     return track.preview_url && !repeated;
   }
   const getRecommendations = async (seed, g, popularity) => {
-    let recommendations = await spotifyService.recommendations(seed, props.user.country, g || genre, popularity || (genre ? 11 : 31) + tracklist.length);    
-    if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => checkRecommendation(e)) || [];
-    log("filtered: ", recommendations.tracks.length);
-    shuffleArray(recommendations.tracks);
-    recommendations.tracks = recommendations.tracks.slice(0,5);
-    return recommendations;
+    try {
+      let recommendations = await spotifyService.recommendations(seed, props.user.country, g || genre, popularity || (genre ? 11 : 31) + tracklist.length);    
+      if (usepreview)  recommendations.tracks = recommendations.tracks.filter(e => checkRecommendation(e)) || [];
+      log("filtered: ", recommendations.tracks.length);
+      shuffleArray(recommendations.tracks);
+      recommendations.tracks = recommendations.tracks.slice(0,5);
+      return recommendations;      
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
   const checkAnwser = (track) => {
     next.current.reset();
@@ -264,6 +269,7 @@ export default function Player(props) {
     while (trks.items.length < 20) {
       shuffleArray(trks.items);
       let recommendations = await getRecommendations(trks.items[0].id, null, 25);
+      if (!recommendations) continue;
       trks.items = trks.items.concat(recommendations.tracks);
     }
     createTrackList(trks, g);
