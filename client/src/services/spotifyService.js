@@ -64,6 +64,16 @@ export default {
         }
         return (res || {}).data;
     },
+    options: async (tracks) => {
+        let res;
+        try {
+            res = await axios.get(`https://api.spotify.com/v1/tracks?ids=${tracks}`, getConfig());
+        } catch (error) {
+            console.log(error)
+            if(error.response.status === 401) refreshToken();
+        }
+        return (res || {}).data;
+    },
     refreshToken: refreshToken
 }
 

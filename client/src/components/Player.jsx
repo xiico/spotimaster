@@ -19,6 +19,7 @@ export default function Player(props) {
   const [device, setdevice] = useState(null);
   const [started, setstarted] = useState(null);
   const [options, setoptions] = useState(null);
+  const [optionshistory, setoptionshistory] = useState([]);
   const [curtrack, setcurtrack] = useState(null);
   const [tracklist, settracklist] = useState(null);
   const [canplay, setcanplay] = useState(true);
@@ -134,6 +135,7 @@ export default function Player(props) {
     setoptions(recommendations);
     var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
     setanswears([...answears, getSimpleTrack(rand)])
+    setoptionshistory([...optionshistory,recommendations.tracks.map(t => t.id)]);
     if (rand) {
       let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview);
       setpreview(p);
@@ -208,11 +210,13 @@ export default function Player(props) {
       points: cscore,
       maxcombo: Math.max(maxcombo, ccombo),
       date: new Date(),
-      songs: answears
+      songs: answears,
+      options: optionshistory
     }
     props.user.score = scr;
     if (!tracklist.length) {
       setanswears([]);
+      setoptionshistory([]);
       userService.update(props.user);
       leaderboardService.insert(scr, props.user.id);
       settracklist(null);
@@ -282,6 +286,7 @@ export default function Player(props) {
     setcombo(0);
     setmaxcombo(0);
     setanswears([]);
+    setoptionshistory([]);
   }
   const getGenres = async () => {
     let res = await spotifyService.genres();

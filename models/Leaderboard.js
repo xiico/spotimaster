@@ -18,7 +18,9 @@ const leaderboardSchema = new Schema({
             result: String,
             time: Number
         }
-    ]
+    ],
+    options: [[String]],
+    availableForChallenge: Boolean,
 })
 
 mongoose.model('leaderboards', leaderboardSchema);

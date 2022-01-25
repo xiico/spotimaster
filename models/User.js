@@ -7,7 +7,8 @@ const userSchema = new Schema({
     href: String,
     date: Date,
     picture: String,
-    country: String
+    country: String,
+    challengeScore: Number,
 })
 
 mongoose.model('users', userSchema);
