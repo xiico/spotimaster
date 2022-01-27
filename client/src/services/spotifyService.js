@@ -11,17 +11,19 @@ export default {
         }
         return (res || {}).data;
     },
-    play: async (device, track, position, usepreview) => {
+    play: async (device, track, position, usepreview, preview) => {
         const data = {
             "uris": [`spotify:track:${track.id}`],
             "position_ms": position || 0
           }
-        let preview
+        // let preview
+        // preview shared the hole time
+        if (!preview) preview = new Audio(track.preview_url);
         try {
             if(!usepreview) await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, data, getConfig());
             else {
-                preview = new Audio(track.preview_url);
-                preview.load();
+                // preview = new Audio(track.preview_url);
+                preview.src = track.preview_url;
                 preview.play();
             }
         } catch (error) {

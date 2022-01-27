@@ -137,7 +137,7 @@ export default function Player(props) {
     setanswears([...answears, getSimpleTrack(rand)])
     setoptionshistory([...optionshistory,recommendations.tracks.map(t => t.id)]);
     if (rand) {
-      let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview);
+      let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview, preview);
       setpreview(p);
     }
     // console.log("rand: ", rand);
@@ -265,6 +265,7 @@ export default function Player(props) {
     );
   }
   const start = async () => {
+    if (preview) preview.play();
     log("genre: ", select.current.getValue());
     let g = select.current.getValue();
     setgenre(g);

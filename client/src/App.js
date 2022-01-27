@@ -32,6 +32,7 @@ function App(props) {
           window.location = env.REACT_APP_HOST_CLIENT;
         }
       }
+      setpreview(new Audio('click.mp3'));
     }
   }, [props.location.hash, props.location.search, user, env.REACT_APP_HOST_CLIENT]);
   const getSpotifyUser = async () => {
