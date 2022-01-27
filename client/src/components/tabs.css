@@ -66,6 +66,7 @@
     margin: 5px;
     background-color: rgba(0,0,0,0.8);
     padding: 4px;
+    position: relative;
 }
 .tabs-user-name{
     display: inline;

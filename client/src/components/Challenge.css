@@ -1,0 +1,75 @@
+.versus-entry {
+    background-color: #122;
+    width: 400px;
+    margin: 10px;
+    height: 200px;
+    background: radial-gradient(#2a09e2, #000000);
+    position: relative;
+}
+
+.versus-entry img, .versus-entry svg {
+    height: 40px;
+    float: left;
+}
+
+.versus {
+    position: absolute;
+    font-size: 60px;
+    font-weight: bolder;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    color: red;
+    text-shadow:  0 0 12px #fff, 0 0 12px #fff;
+}
+
+.challenge  {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;     
+    transform: translate(-50%,-50%);
+    font-weight: 'bold';
+}
+
+.points {
+    position: absolute;
+    font-size: 30px;
+    font-weight: bolder;
+    left: 50%;
+    top: 40px;
+    transform: translate(-50%,-50%);
+}
+
+.player-card {
+    margin: 48px 0 0 26px;
+    position: relative;
+    /* background-color: chartreuse; */
+    width: 110px;
+    height: 110px;
+    border-radius: 55px;
+}
+
+.player-card .name {
+    color: white;
+    position: absolute;
+    font-size: 15px;
+    white-space: nowrap;
+    position: absolute;
+    font-weight: bolder;
+    left: 50%;
+    top: 86px;
+    transform: translate(-50%,-50%);
+    background-color: #0008ff;
+    padding: 0 6px 2px 6px;
+    border-radius: 15px;
+}
+.player-card .picture {
+    border-radius: 50%;
+    left: 50%;
+    position: absolute;
+    top: 54px;
+    transform: translate(-50%,-50%);
+    width: 55px;
+    height: 55px;
+    border: 4px solid white;
+}

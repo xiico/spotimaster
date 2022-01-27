@@ -10,17 +10,6 @@ export default function Leaderboard(props) {
     // if (props.preview) props.preview.pause();
     const [users, setusers] = useState();
     const [genres, setgenres] = useState();
-    // useEffect(() => {
-    //     // const getUsers = async () => {
-    //     //     let result = await leaderboardService.get('Normal');
-    //     //     setusers(result);
-    //     // }
-    //     // const getGenres = async () => {
-    //     //     let result = await leaderboardService.get();
-    //     //     setgenres(result);
-    //     // }
-    //     // getUsers();
-    // }, []);
     const getUsers = async () => {
         if (!users) {
             let result = await leaderboardService.get('Normal');
@@ -38,6 +27,12 @@ export default function Leaderboard(props) {
     }
     const roundPicture = {
         borderRadius: '50%'
+    }
+    const challenge = {
+        position: 'absolute',
+        right: '4px',
+        bottom: '4px',
+        fontWeight: 'bold',
     }
 
     return (
@@ -78,6 +73,7 @@ export default function Leaderboard(props) {
                                             {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture />}
                                             <div className="tabs-user-name" >{s.user.name}</div>
                                             <div className="tabs-user-points" >{format(s.points, ' ')}</div>
+                                            <button style={challenge}>Challenge</button>
                                         </div>
                                     )
                                 })}

@@ -20,7 +20,7 @@ export default function Header(props) {
             <ul>
                 <li><Link to="/leaderboard">Leaderboard</Link></li>
                 <li><span>|</span></li>
-                <li><Link to="/challenges">Challenges</Link></li>
+                {/* <li><Link to="/challenges">Challenges</Link></li> */}
                 <li className="profile-picture">
                     {(
                         props.user

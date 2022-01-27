@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const Leaderboard = mongoose.model('leaderboards');
+const Challenge = mongoose.model('challenge');
 const User = mongoose.model('users');
 
 module.exports = (app) => {
     app.get('/api/leaderboard/:genre?', async (req, res) => {
-        console.log('/api/leaderboard>params:', req.params);
+        console.log('/api/leaderboard/:genre?>params:', req.params);
         let result; 
         if (req.params.genre === 'Normal') result = await Leaderboard.aggregate(byUser());
         else result = await Leaderboard.aggregate(byGenre(req.params.genre));
@@ -15,9 +16,19 @@ module.exports = (app) => {
         let score = req.body;
         let user = await User.findOne({id: req.params.id});
         score.user = user._id;
-        Leaderboard.create(score).catch(error => {
+        let leaderboarEntry = await Leaderboard.create(score).catch(error => {
             return res.status(500).send(error);
         });
+        let challenge = {
+            defending: leaderboarEntry._id,
+            score: leaderboarEntry.points,
+            date: new Date(),
+        }
+        console.log('saving challenge');
+        let result = await Challenge.create(challenge).catch(error => {
+            return res.status(500).send(error);
+        });        
+        console.log('challenge saved');
         return res.status(200).send({});
     });
 }

@@ -6,6 +6,7 @@ require('dotenv').config();
 
 require('./models/User');
 require('./models/Leaderboard');
+require('./models/Challenge');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(bodyParser.json())
 require('./routes/userRoute')(app);
 require('./routes/authorization')(app);
 require('./routes/leaderboard')(app);
+require('./routes/challenges')(app);
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));

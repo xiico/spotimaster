@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Leaderboard from './components/Leaderboard';
+import Challenge from './components/Challenge';
 
 function App(props) {
   const [user, setuser] = useState(null);
@@ -46,6 +47,7 @@ function App(props) {
             <Home user={user} preview={preview} setpreview={setpreview} />
           </Route>
           <Route exact path="/leaderboard" render={(history) => <Leaderboard history={history} user={user} preview={preview} ></Leaderboard>} />
+          {/* <Route exact path="/challenges/:id?" render={(history) => <React.StrictMode><Challenge history={history} user={user} preview={preview} ></Challenge></React.StrictMode>} /> */}
         </Switch>        
       </div>
     </Router>
