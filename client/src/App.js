@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import runtimeEnv from './modules/runtimeEnv';
-
+import userService from './services/userService';
 import spotifyService from './services/spotifyService';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
 // import Game from './components/Game';
 import Header from "./components/Header";
 import Home from "./components/Home";
@@ -33,7 +33,7 @@ function App(props) {
         }
       }
       setpreview(new Audio('click.mp3'));
-    }
+    } else userService.update(user);
   }, [props.location.hash, props.location.search, user, env.REACT_APP_HOST_CLIENT]);
   const getSpotifyUser = async () => {
     let user = await spotifyService.user();
@@ -42,13 +42,13 @@ function App(props) {
   return (
     <Router>
       <div className="App">
-        <Header user={user} link={Link} ></Header>
+        <Header user={user} link={Link} navlink={NavLink} ></Header>
         <Switch>
           <Route exact path="/">
             <Home user={user} preview={preview} setpreview={setpreview} />
           </Route>
           <Route exact path="/leaderboard" render={(history) => <Leaderboard history={history} user={user} preview={preview} ></Leaderboard>} />
-          {/* <Route exact path="/challenges/:id?" render={(history) => <React.StrictMode><Challenge history={history} user={user} preview={preview} ></Challenge></React.StrictMode>} /> */}
+          <Route exact path="/challenges/:id?" render={(history) => <React.StrictMode><Challenge history={history} user={user} preview={preview} setpreview={setpreview}  ></Challenge></React.StrictMode>} />
         </Switch>        
       </div>
     </Router>

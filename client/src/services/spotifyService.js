@@ -67,10 +67,12 @@ export default {
         }
         return (res || {}).data;
     },
-    options: async (tracks) => {
+    options: async (run, index) => {
         let res;
         try {
-            res = await axios.get(`https://api.spotify.com/v1/tracks?ids=${tracks}`, getConfig());
+            let options = await axios.get(`/api/challengeoptions/${run.user._id}/${index}`);
+            res = await axios.get(`https://api.spotify.com/v1/tracks?ids=${options.data.tracks.toString()}`, getConfig());
+            res.data.song = options.data.song;
         } catch (error) {
             console.log(error)
             if(error.response.status === 401) refreshToken();

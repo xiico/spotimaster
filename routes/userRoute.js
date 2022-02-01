@@ -6,7 +6,9 @@ module.exports = (app) => {
   app.get('/api/user', async (req, res) => {
     console.log('get_user:', req.query.id);
     if (req.query.id) {
-      let user = await User.findOne({ id: req.query.id });
+      let user = await User.findOne({ id: req.query.id }).lean();
+      user.sessionId = (Math.random() + 1).toString(36).substring(2);
+      user.save();
       return res.status(200).send(user);
     } else {
       // let users = await User.find();
@@ -36,6 +38,7 @@ module.exports = (app) => {
     user.name = req.body.name;
     user.picure = req.body.picure;
     user.href = req.body.href;
+    // user.sessionId = (Math.random() + 1).toString(36).substring(2);
     // user.scores.push(req.body.score);
     // user.scores.sort((a, b) => {
     //     if(!a || !b) return;

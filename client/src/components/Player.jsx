@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Player.css';
 import './Button.css';
 import spotifyService from '../services/spotifyService';
-import userService from '../services/userService';
 import leaderboardService from '../services/leaderboardService';
 import runtimeEnv from '../modules/runtimeEnv';
 import Card from "./Card";
@@ -38,6 +37,7 @@ export default function Player(props) {
   const [genres, setgenres] = useState();
   const [genre, setgenre] = useState();
   const [answears, setanswears] = useState([]);
+  // const [challenge, setchallenge] = useState();
   // const [preview, setpreview] = useState(false);
   const next = useRef();
   const select = useRef();
@@ -111,38 +111,52 @@ export default function Player(props) {
     setcanplay(false);
     setchecked(null);
     let recommended;
-    let recommendations = await getRecommendations(track.id);
-    log('track: ', track);
-    let count = 0;
-    while ((!recommendations || recommendations.tracks.length < 5) && tracklist.length) {
-      recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
-      recommendations = await getRecommendations(recommended.id, null, 40 - (count * 4));
-      count++;
-      if(count > 10){
-        recommendations = await getRecommendations(recommended.id, 'pop');
+
+    if (!props.run) {
+      let recommendations = await getRecommendations(track.id);
+      log('track: ', track);
+      let count = 0;
+      while ((!recommendations || recommendations.tracks.length < 5) && tracklist.length) {
+        recommended = tracklist[Math.floor(Math.random() * tracklist.length)];
+        recommendations = await getRecommendations(recommended.id, null, 40 - (count * 4));
+        count++;
+        if(count > 10){
+          recommendations = await getRecommendations(recommended.id, 'pop');
+        }
       }
-    }
-    if (recommendations.tracks.length < 5) {
-      log('no recommendations!', recommended);
-      recommendations = await getRecommendations(null, 'pop');
-    }
-    log('recommended: ', recommended);
-    log('recommendations: ', recommendations);
-    // next.current.reset();
-    setcanplay(false);
-    setstarttime(new Date().getTime());
-    shuffleArray(recommendations.tracks);
-    setoptions(recommendations);
-    var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
-    setanswears([...answears, getSimpleTrack(rand)])
-    setoptionshistory([...optionshistory,recommendations.tracks.map(t => t.id)]);
-    if (rand) {
-      let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview, preview);
+      if (recommendations.tracks.length < 5) {
+        log('no recommendations!', recommended);
+        recommendations = await getRecommendations(null, 'pop');
+      }
+      log('recommended: ', recommended);
+      log('recommendations: ', recommendations);
+      // next.current.reset();
+      setcanplay(false);
+      setstarttime(new Date().getTime());
+      shuffleArray(recommendations.tracks);
+      setoptions(recommendations);
+      var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
+      setanswears([...answears, getSimpleTrack(rand)])
+      setoptionshistory([...optionshistory,recommendations.tracks.map(t => t.id)]);
+      if (rand) {
+        let p = await spotifyService.play(device, rand, rand.duration_ms / 3, usepreview, preview);
+        setpreview(p);
+      }
+      // console.log("rand: ", rand);
+      setseed(recommended || track);
+      setcurtrack(rand.id);
+    } else {      
+      let recomendations = await getOptions(props.run, 19 - tracklist.length);
+      setcanplay(false);
+      setstarttime(new Date().getTime());
+      setoptions(recomendations);
+      let song = recomendations.tracks.find(t => t.id === recomendations.song);
+      setanswears([...answears, getSimpleTrack(song)])
+      let p = await spotifyService.play(device, song, 0, usepreview, preview);
       setpreview(p);
+      setseed(song);
+      setcurtrack(recomendations.song);      
     }
-    // console.log("rand: ", rand);
-    setseed(recommended || track);
-    setcurtrack(rand.id);
     setTimeout(() => next.current.start(), 300);
   }
   const createTrackList = (trl, g) => {
@@ -186,6 +200,17 @@ export default function Player(props) {
       return null;
     }
   }
+  const getOptions = async (run, index) => {
+    try {
+      let recommendations = {};
+      let options = await spotifyService.options(run, index);
+      recommendations = options;
+      return recommendations;      
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
   const checkAnwser = (track) => {
     next.current.reset();
     let ccombo = combo; // current combo;
@@ -217,8 +242,7 @@ export default function Player(props) {
     if (!tracklist.length) {
       setanswears([]);
       setoptionshistory([]);
-      userService.update(props.user);
-      leaderboardService.insert(scr, props.user.id);
+      leaderboardService.insert(scr, props.user.id, props.challenge);
       settracklist(null);
       setTimeout(() => {
         setshowscore(true);
@@ -266,9 +290,12 @@ export default function Player(props) {
   }
   const start = async () => {
     if (preview) preview.play();
-    log("genre: ", select.current.getValue());
-    let g = select.current.getValue();
-    setgenre(g);
+    let g;
+    if (select.current) {
+      log("genre: ", select.current.getValue());
+      let g = select.current.getValue();
+      setgenre(g);
+    }
     let trks = await spotifyService.tracks(g);
     if (!trks.items) trks.items = trks.tracks;
     while (trks.items.length < 20) {
@@ -308,15 +335,15 @@ export default function Player(props) {
       <div className={"counter" + (!started ? " hidden" : "")}>
         <span>{`Track ${plsize - ((tracklist || {}).length || 0)} of ${plsize}`}</span>
         <span> - </span>
-        <span>Your score is </span><span className="points">{ format(score, ' ')}</span><span className="multiplier">{(combo ? ` ${combo}x`: '')}</span>
+        <span className="points">{ format(score, ' ')}</span><span className="multiplier">{(combo ? ` ${combo}x`: '')}</span>
         <span className="patial_score">{format(pscore || '', ' ')}</span>
       </div>
       {started ? renderCards() : (
         <div style={{margin:'auto'}}>          
-          <div><span>You can use your own songs or pick a genre</span></div> 
+          <div className='message'>{ !props.run ? <span>You can use your own songs or pick a genre</span> : '' }</div> 
           <div className="div_start">
             <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
-            <Select ref={select} text="Choose an genre" items={genres} value={genre} ></Select>
+            { !props.run ? <Select ref={select} text="Choose an genre" items={genres} value={genre} ></Select> : '' }
           </div>
         </div>
       )}
@@ -324,7 +351,7 @@ export default function Player(props) {
         <div className="score_info" >
           {<Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
           <Next hide={!(tracklist || {}).length} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
-          {(started ? <Card  seed={seed}
+          {(started && !props.run ? <Card  seed={seed}
                   artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
                   image={seed.album ? seed.album.images.find(a => a.width === 300).url : seed.image} 
                   track={seed.name || seed.track} genre={genre}

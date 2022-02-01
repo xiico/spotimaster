@@ -27,7 +27,17 @@ module.exports = (app) => {
         console.log('saving challenge');
         let result = await Challenge.create(challenge).catch(error => {
             return res.status(500).send(error);
-        });        
+        });
+        try {
+            if (req.query.challenge) {
+                console.log('req.query.challenge:',req.query.challenge)
+                let challenge = await Challenge.findById(req.query.challenge);
+                challenge.challenger.push(leaderboarEntry._id);
+                challenge.save();
+            }            
+        } catch (error) {
+            console.log(error);
+        }
         console.log('challenge saved');
         return res.status(200).send({});
     });

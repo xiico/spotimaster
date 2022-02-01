@@ -5,34 +5,66 @@ const User = mongoose.model('users');
 
 module.exports = (app) => {
     app.get(`/api/challenges/:id?`, async (req, res) => {
+        // console.log('app.props:', app.props);
         let result;
-        console.log('req.params:',req.params);
+        // console.log('req.params:',req.params);
         let query = {};
         if (req.params.id) query._id = req.params.id;
         try {
             result = await Challenge.find(query).populate({
                 path: 'defending',
-                select: { 'genre': 1,'points':1,'user':1,'date':1},
-                populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1}, model: User }, model: Leaderboard
-            }).sort({ date:-1 }).limit(20);
-            console.log('result: ', result.length);
+                select: { 'genre': 1,'points':1,'user':1,'date':1 },
+                populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
+            }).sort({ date:-1 }).lean().limit(20);
+            console.log('result: ', result.length);      
         } catch (error) {
             console.log(error);
         }
 
         return res.status(200).send(result);
     });
-    // app.get(`/api/challenges/:id?`, async (req, res) => {
-    //     let challenge = {
-    //         defending: '61f0627d84ec681aa8b45fea',
-    //         score: 5,
-    //         date: new Date(),
-    //     }
-    //     let result = await Challenge.create(challenge).catch(error => {
-    //         return res.status(500).send(error);
-    //     });
-    //     return res.status(200).send(result);
-    // });
+    app.get(`/api/challengeinfo/:id`, async (req, res) => {
+        let result;
+        let query = {};
+        console.log('req.params.id:',req.params.id);
+        if (req.params.id) query._id = req.params.id;
+        try {
+            result = await Challenge.findOne(query).populate({
+                path: 'defending',
+                select: { 'genre': 1,'points':1,'user':1,'date':1 },
+                populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
+            }).sort({ date:-1 });
+            console.log('result: ', result);           
+        } catch (error) {
+            console.log(error);
+        }
+        if (result.defending.user) {
+            result.defending.user.sessionId = req.params.id;
+            result.defending.user.save(error => {
+                if (error) res.status(500).send({ error: error });
+                console.log('user saved');
+            });
+        }
+
+        return res.status(200).send(result);
+    });
+    app.get(`/api/challengeoptions/:user/:index`, async (req, res) => {
+        let result;
+        let query = {};
+        console.log('req.params.user:',req.params.user);
+        try {
+            let user = await User.findOne({ _id:req.params.user });                   
+            result = await Challenge.findOne({ _id: user.sessionId }).populate({
+                path: 'defending',
+                select: { 'genre': 1,'points':1,'user':1,'date':1, 'options': 1, 'songs': 1 }, model: Leaderboard
+            }).sort({ date:-1 });
+            console.log('result:',result);
+            return res.status(200).send({tracks: result.defending.options[req.params.index], song: result.defending.songs[req.params.index].id});
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    });
 }
 
 const byUser = () => {

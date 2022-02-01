@@ -31,7 +31,17 @@
     font-weight: 'bold';
 }
 
-.points {
+.challenge-style {
+    position: absolute;
+    font-weight: bold;
+    left: 50%;
+    top: 15px;
+    transform: translate(-50%,-50%);
+    color: white;
+    text-shadow: 0 0 12px #fff, 0 0 12px #fff;
+}
+
+.challenge-points {
     position: absolute;
     font-size: 30px;
     font-weight: bolder;

@@ -9,6 +9,7 @@ const userSchema = new Schema({
     picture: String,
     country: String,
     challengeScore: Number,
+    sessionId: String,
 })
 
 mongoose.model('users', userSchema);

@@ -19,6 +19,10 @@
         text-decoration: none;
     }
 
+    li a.active {
+        font-weight: bold;
+    }
+
     .profile-picture{
         float: right
     }
@@ -38,7 +42,7 @@
         color: white;
         text-align: center;
         float: left;
-        margin-top: 16px;
+        /* margin-top: 16px; */
         margin-right: 4px;
         font-size: 14px;
     }

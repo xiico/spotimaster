@@ -9,12 +9,14 @@ import {Tab, Tabs} from './tabs';
 
 export default function Challenge(props) {
     // if (props.preview) props.preview.pause();
-    const [challenges, setlatest] = useState();
-    const [genres, setbygenres] = useState();
+    const [latest, setlatest] = useState();
     const [challenge, setchallenge] = useState();
+    const [genres, setbygenres] = useState();
+    const [run, setrun] = useState();
+    const [challengeinfo, setchallengeinfo] = useState();
     const params = props.history.match.params;
     const getLatest = async () => {
-        if (!challenges) {
+        if (!latest) {
             let result = await challengeService.latest();
             setlatest(result);
         }
@@ -35,6 +37,11 @@ export default function Challenge(props) {
     const roundPicture = {
         borderRadius: '50%'
     }
+    const startChallenge = async (challenge) => {
+        setrun(challenge.defending);
+        setchallengeinfo(challengeService.getinfo(challenge._id));
+        setchallenge(challenge._id);
+    }
 
     const playerCard = (user) => {
         return (
@@ -47,7 +54,9 @@ export default function Challenge(props) {
     const renderPlayer = () => {
         return (
             <React.StrictMode>
-                <Player user={props.user} preview={props.preview} setpreview={props.setpreview} ></Player>
+                <div className="player">
+                    <Player user={props.user} preview={props.preview} setpreview={props.setpreview} run={run} challenge={challenge} ></Player>
+                </div>
             </React.StrictMode>
         );
     };      
@@ -56,13 +65,14 @@ export default function Challenge(props) {
         return (          
             <Tabs default={0}>
                 <Tab id="Latest" call={!params.id ? getLatest : getById}>
-                {challenges ? challenges.map((c, i) => {
+                {latest ? latest.map((c, i) => {
                             return (
                                 <div key={i} className="versus-entry">
                                     {playerCard(c.defending.user)}
-                                    <div className="points" >{format(c.defending.points, ' ')}</div>
+                                    <div className="points challenge-points" >{format(c.defending.points, ' ')}</div>
                                     <div className='versus'>Vs</div>
-                                    { props.user && props.user.id !== c.defending.user.id ? <button className='challenge' onClick={() => setchallenge(c.defending)}>Challenge</button> : ''}
+                                    <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
+                                    { props.user && props.user.id !== c.defending.user.id ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
                                 </div>
                                 )
                         }) : ""}
@@ -81,5 +91,5 @@ export default function Challenge(props) {
         );
       };
 
-    return ( challenge ? renderPlayer() : renderTabs() );
+    return ( run ? renderPlayer() : renderTabs() );
 }

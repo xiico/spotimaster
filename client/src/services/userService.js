@@ -12,6 +12,7 @@ export default {
   },  
   update: async (user) => {
     // console.log('user_service_id:',id);
+    if (!user) return;
     const data = {
       name: user.display_name,
       id: user.id,
