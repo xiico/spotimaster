@@ -37,6 +37,7 @@ export default function Player(props) {
   const [genres, setgenres] = useState();
   const [genre, setgenre] = useState();
   const [answears, setanswears] = useState([]);
+  const [leaderboard, setleaderboard] = useState();
   // const [challenge, setchallenge] = useState();
   // const [preview, setpreview] = useState(false);
   const next = useRef();
@@ -228,21 +229,12 @@ export default function Player(props) {
     setcombo(ccombo);
     let cscore = calculateScore(ccombo);
     setchecked(track.id);
-    let scr = {
-      genre: genre || 'Normal',
-      hits: ccorrect,
-      total: plsize,
-      points: cscore,
-      maxcombo: Math.max(maxcombo, ccombo),
-      date: new Date(),
-      songs: answears,
-      options: optionshistory
-    }
+    let scr = createRun(genre, ccorrect, plsize, cscore, maxcombo, ccombo, answears, optionshistory)
     props.user.score = scr;
     if (!tracklist.length) {
       setanswears([]);
       setoptionshistory([]);
-      leaderboardService.insert(scr, props.user.id, props.challenge);
+      setleaderboard(leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard));
       settracklist(null);
       setTimeout(() => {
         setshowscore(true);
@@ -315,6 +307,10 @@ export default function Player(props) {
     setmaxcombo(0);
     setanswears([]);
     setoptionshistory([]);
+    if (props.run) {
+      let lboard = await leaderboardService.insert(createRun(genre, 0, plsize, 0, 0, 0, [], []), props.user.id, props.challenge);
+      setleaderboard(lboard);
+    }
   }
   const getGenres = async () => {
     let res = await spotifyService.genres();
@@ -373,5 +369,18 @@ export default function Player(props) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
+  }
+
+  function createRun(genre, ccorrect, plsize, cscore, maxcombo, ccombo, answears, optionshistory) {
+    return {
+      genre: genre || 'Normal',
+      hits: ccorrect,
+      total: plsize,
+      points: cscore,
+      maxcombo: Math.max(maxcombo, ccombo),
+      date: new Date(),
+      songs: answears,
+      options: optionshistory
+    };
   }
 }

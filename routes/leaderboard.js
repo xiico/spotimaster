@@ -12,35 +12,67 @@ module.exports = (app) => {
         return res.status(200).send(result);
     });
     app.post(`/api/leaderboard/:id`, async (req, res) => {
-        console.log('post leaderboard:', req.params, req.body);
+        console.log('post params:', req.params);
         let score = req.body;
         let user = await User.findOne({id: req.params.id});
         score.user = user._id;
-        let leaderboarEntry = await Leaderboard.create(score).catch(error => {
-            return res.status(500).send(error);
-        });
-        let challenge = {
-            defending: leaderboarEntry._id,
-            score: leaderboarEntry.points,
-            date: new Date(),
-        }
-        console.log('saving challenge');
-        let result = await Challenge.create(challenge).catch(error => {
-            return res.status(500).send(error);
-        });
+        // let result = {};
+        let leaderboardEntry;
         try {
             if (req.query.challenge) {
                 console.log('req.query.challenge:',req.query.challenge)
-                let challenge = await Challenge.findById(req.query.challenge);
-                challenge.challenger.push(leaderboarEntry._id);
-                challenge.save();
-            }            
+                console.log('req.query.leaderboard:',req.query.leaderboard)
+                if (!req.query.leaderboard) {
+                    leaderboardEntry = await Leaderboard.create(score).catch(error => {
+                        return res.status(500).send(error);
+                    });   
+                    let challenge = await Challenge.findById(req.query.challenge);
+                    challenge.challenger.push(leaderboardEntry._id);
+                    challenge.save();
+                } else {
+                    leaderboardEntry = await Leaderboard.findById(req.query.leaderboard).catch(error => {
+                        return res.status(500).send(error);
+                    });  
+                    leaderboardEntry = setValues(leaderboardEntry, score);
+                    leaderboardEntry.save();
+                    let challenge = await Challenge.findById(req.query.challenge);
+                    console.log('lscore,cscore',leaderboardEntry.points,challenge.score);
+                    if (leaderboardEntry.points > challenge.score) {
+                        challenge.winner = leaderboardEntry.user._id;
+                        challenge.save();
+                    }
+                    console.log('challenge saved');
+                }
+            } else {          
+                leaderboardEntry = await Leaderboard.create(score).catch(error => {
+                    return res.status(500).send(error);
+                });      
+                let challenge = {
+                    defending: leaderboardEntry._id,
+                    score: leaderboardEntry.points,
+                    date: new Date(),
+                }
+                console.log('saving challenge');
+                await Challenge.create(challenge).catch(error => {
+                    return res.status(500).send(error);
+                });
+            }
         } catch (error) {
             console.log(error);
         }
-        console.log('challenge saved');
-        return res.status(200).send({});
+        return res.status(200).send(leaderboardEntry);
     });
+}
+
+function setValues(run, data) {
+    run.genre = data.genre;
+    run.hits = data.hits;
+    run.total = data.total;
+    run.points = data.points;
+    run.maxcombo = data.maxcombo;
+    run.songs = data.songs;
+    run.options = data.options;
+    return run
 }
 
 const byUser = () => {

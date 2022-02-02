@@ -6,6 +6,7 @@ import ProfilePicture from './ProfilePicutre';
 import Flag from './Flag';
 import Player from "./Player";
 import {Tab, Tabs} from './tabs';
+import runtimeEnv from '../modules/runtimeEnv';
 
 export default function Challenge(props) {
     // if (props.preview) props.preview.pause();
@@ -15,6 +16,7 @@ export default function Challenge(props) {
     const [run, setrun] = useState();
     const [challengeinfo, setchallengeinfo] = useState();
     const params = props.history.match.params;
+    const env = runtimeEnv();
     const getLatest = async () => {
         if (!latest) {
             let result = await challengeService.latest();
@@ -34,6 +36,9 @@ export default function Challenge(props) {
     const hide = {
         display: 'none'
     }
+    const shareChallenge = {
+        left: '64%'
+    }
     const roundPicture = {
         borderRadius: '50%'
     }
@@ -43,9 +48,25 @@ export default function Challenge(props) {
         setchallenge(challenge._id);
     }
 
-    const playerCard = (user) => {
+    const cardOffset = (index) => {
+        switch (index) {
+            case 0:
+                return {right:'15px'};
+            case 1:
+                return {right:'20px'};
+            case 2:
+                return {right:'25px'};
+            case 3:
+                return {right:'30px'};
+        
+            default:
+                return {right:'25px'};
+        }
+    }
+
+    const playerCard = (user, style) => {
         return (
-          <div className='player-card'>
+          <div className='player-card' style={style}>
                 {user.picture ? <img className='picture' alt="User" style={roundPicture} src={user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture css={'picture'} size={'medium'} />}
                 <div className="name" >{user.name}</div>
           </div>
@@ -59,7 +80,20 @@ export default function Challenge(props) {
                 </div>
             </React.StrictMode>
         );
-    };      
+    };
+
+    const canChallange = (c) => {
+        return props.user && props.user.id !== c.defending.user.id && (!c.challenger.length || !c.challenger.find(e => e.user.id === props.user.id));
+    }
+
+    const share = (c) => {
+        navigator.share({
+            title: 'Share challenge',
+            url: `${env.REACT_APP_HOST_CLIENT}/challenges/${c._id}`
+          }).then(() => {
+            console.log('Thanks for sharing!');
+          }).catch(console.error);
+    }
 
     const renderTabs = () => {
         return (          
@@ -68,11 +102,13 @@ export default function Challenge(props) {
                 {latest ? latest.map((c, i) => {
                             return (
                                 <div key={i} className="versus-entry">
-                                    {playerCard(c.defending.user)}
+                                    <div className='defending'>{playerCard(c.defending.user)}</div>
+                                    {c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr.user, cardOffset(k))}</div>)})}
                                     <div className="points challenge-points" >{format(c.defending.points, ' ')}</div>
                                     <div className='versus'>Vs</div>
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
-                                    { props.user && props.user.id !== c.defending.user.id ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
+                                    { canChallange(c) ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
+                                    { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ><img src='/img/share-icon.png'/></button> : ''}
                                 </div>
                                 )
                         }) : ""}

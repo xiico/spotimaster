@@ -50,13 +50,22 @@
     transform: translate(-50%,-50%);
 }
 
-.player-card {
+.defending .player-card {
     margin: 48px 0 0 26px;
     position: relative;
     /* background-color: chartreuse; */
     width: 110px;
     height: 110px;
     border-radius: 55px;
+}
+
+.challenger .player-card {
+    right: 25px;
+    top: 50px;
+    width: 110px;
+    height: 110px;
+    border-radius: 55px;
+    position: absolute;
 }
 
 .player-card .name {
@@ -82,4 +91,19 @@
     width: 55px;
     height: 55px;
     border: 4px solid white;
+}
+
+.share {
+    padding: 0;
+    position: absolute;
+    left: 50%;
+    bottom: 9px;
+    transform: translate(-50%,-50%);
+    width: 22px;
+    height: 22px;
+}
+.share img {
+    padding: 0;
+    width: 16px;
+    height: 16px; 
 }
