@@ -285,7 +285,7 @@ export default function Player(props) {
     let g;
     if (select.current) {
       log("genre: ", select.current.getValue());
-      let g = select.current.getValue();
+      g = select.current.getValue();
       setgenre(g);
     }
     let trks = await spotifyService.tracks(g);
