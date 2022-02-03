@@ -80,7 +80,7 @@ export default function Leaderboard(props) {
                                             {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture />}
                                             <div className="tabs-user-name" >{s.user.name}</div>
                                             <div className="tabs-user-points" >{format(s.points, ' ')}</div>
-                                            { props.user.id !== s.user.id ? <Link style={challenge} to={`/challenges/${s._id}`}>Challenge</Link> : ''}
+                                            { props.user && props.user.id !== s.user.id ? <Link style={challenge} to={`/challenges/${s._id}`}>Challenge</Link> : ''}
                                         </div>
                                     )
                                 })}
