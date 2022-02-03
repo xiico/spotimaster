@@ -5,11 +5,14 @@ import format from '../modules/format';
 import ProfilePicture from './ProfilePicutre';
 import Flag from './Flag';
 import {Tab, Tabs} from './tabs';
+import runtimeEnv from '../modules/runtimeEnv';
 
 export default function Leaderboard(props) {
     // if (props.preview) props.preview.pause();
     const [users, setusers] = useState();
     const [genres, setgenres] = useState();
+    const Link = props.link;
+    const env = runtimeEnv();
     const getUsers = async () => {
         if (!users) {
             let result = await leaderboardService.get('Normal');
@@ -27,6 +30,10 @@ export default function Leaderboard(props) {
     }
     const roundPicture = {
         borderRadius: '50%'
+    }
+    const bare = {
+        color: 'white',
+        textDecoration: 'none'
     }
     const challenge = {
         position: 'absolute',
@@ -49,7 +56,7 @@ export default function Leaderboard(props) {
                                     </a>
                                 </div>
                                 <div className="leaderboard_profile_info">
-                                    <span className="leaderboard_profile_name">{u.name}</span>
+                                    <Link style={bare} to={`/challenges/${u._id}`}><span className="leaderboard_profile_name">{u.name}</span></Link>                                    
                                     <div className="leaderboard_profile_points"><span>{format((u.score || {}).points || 0, ' ')}</span><span style={{ color: 'grey' }} >{`${(u.score || {}).genre && (u.score || {}).genre !== 'Normal' ? `(${(u.score || {}).genre})` : ''}`}</span></div>
                                     <div className="leaderboard_profile_stats" style={!u.score ? hide : null} >
                                         <span>{(u.score || {}).hits} of {(u.score || {}).total}</span>
@@ -73,7 +80,7 @@ export default function Leaderboard(props) {
                                             {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture />}
                                             <div className="tabs-user-name" >{s.user.name}</div>
                                             <div className="tabs-user-points" >{format(s.points, ' ')}</div>
-                                            { props.user.id !== s.user.id ? <button style={challenge}>Challenge</button> : ''}
+                                            { props.user.id !== s.user.id ? <Link style={challenge} to={`/challenges/${s._id}`}>Challenge</Link> : ''}
                                         </div>
                                     )
                                 })}

@@ -6,26 +6,42 @@ const User = mongoose.model('users');
 module.exports = (app) => {
     app.get(`/api/challenges/:id?`, async (req, res) => {
         // console.log('app.props:', app.props);
-        let result;
-        // console.log('req.params:',req.params);
+        // let result;
+        let resultLead;
+        let resultUser;
+        console.log('req.params:',req.params);
         let query = {};
         if (req.params.id) query._id = req.params.id;
         try {
+            let resultId = await getResult(query);
+            console.log('results(ch):',resultId.length);
+            // result = resultId;
+            if (resultId.length === 0) {
+                resultLead = await getResult({ defending:req.params.id });
+                console.log('results(de):',resultLead.length);
+                // result = resultLead;
+                if (resultLead.length) return res.status(200).send(resultLead);
+            } else return res.status(200).send(resultId);
+            resultUser = await getResult({ user:req.params.id });
+            console.log('results(us):',resultUser.length);
+            return res.status(200).send(resultUser);
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+
+        async function getResult(query) {
             result = await Challenge.find(query).populate({
                 path: 'defending',
-                select: { 'genre': 1,'points':1,'user':1,'date':1 },
+                select: { 'genre': 1, 'points': 1, 'user': 1, 'date': 1 },
                 populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
             }).populate({
                 path: 'challenger',
-                select: { 'user':1, 'points': 1 },
+                select: { 'user': 1, 'points': 1 },
                 populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
-            }).sort({ date:-1 }).lean().limit(20);
-            console.log('result: ', result.length);      
-        } catch (error) {
-            console.log(error);
+            }).sort({ date: -1 }).lean().limit(25);
+            return result;
         }
-
-        return res.status(200).send(result);
     });
     app.get(`/api/challengeinfo/:id`, async (req, res) => {
         let result;

@@ -104,6 +104,7 @@ export default function Challenge(props) {
     }
 
     const renderTabs = () => {
+        document.querySelectorAll('[property="og:title"]')[0].setAttribute('content','Challenge Page');
         return (          
             <Tabs default={0}>
                 <Tab id="Latest" call={!params.id ? getLatest : getById}>

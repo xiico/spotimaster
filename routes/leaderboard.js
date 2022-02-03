@@ -58,6 +58,7 @@ module.exports = (app) => {
                     defending: leaderboardEntry._id,
                     score: leaderboardEntry.points,
                     date: new Date(),
+                    user: user._id
                 }
                 console.log('saving challenge');
                 await Challenge.create(challenge).catch(error => {
@@ -119,6 +120,7 @@ const byUser = () => {
         },
         {
             $project: {
+                _id: '$user._id',
                 name: '$user.name',
                 id: '$user.id',
                 picture: '$user.picture',
@@ -169,6 +171,7 @@ const byGenre = (genre) => {
             $project: {
                 scores:
                 {
+                    _id: 1,
                     hits: 1,
                     total: 1,
                     points: 1,
@@ -182,6 +185,7 @@ const byGenre = (genre) => {
             $project: {
                 scores:
                 {
+                    _id: 1,
                     hits: 1,
                     total: 1,
                     points: 1,
