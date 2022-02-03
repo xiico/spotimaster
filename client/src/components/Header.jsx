@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './Header.css';
 import Login from "./Login";
 import Menu from "./Menu";
@@ -6,7 +6,7 @@ import ProfilePicture from './ProfilePicutre';
 // import userService from '../services/userService';
 export default function Header(props) {
     // console.log('header:',props.user);
-    const Link = props.link;
+    // const Link = props.link;
     const NavLink = props.navlink;
     const logOut = () => {
         localStorage.clear();

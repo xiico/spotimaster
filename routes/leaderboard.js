@@ -35,13 +35,20 @@ module.exports = (app) => {
                     });  
                     leaderboardEntry = setValues(leaderboardEntry, score);
                     leaderboardEntry.save();
-                    let challenge = await Challenge.findById(req.query.challenge);
+                    let challenge = await Challenge.findById(req.query.challenge).populate({ path: 'defending', model: Leaderboard });
                     console.log('lscore,cscore',leaderboardEntry.points,challenge.score);
+                    console.log('leaderboardEntry:',leaderboardEntry);
                     if (leaderboardEntry.points > challenge.score) {
-                        challenge.winner = leaderboardEntry.user._id;
+                        challenge.winner = leaderboardEntry.user;
+                        challenge.score = leaderboardEntry.points;
                         challenge.save();
+                        console.log('challenger saved:', leaderboardEntry.user);
+                    } else {
+                        let winner = challenge.user || challenge.defending.user;
+                        challenge.winner = winner;
+                        challenge.save();
+                        console.log('defending saved', winner);
                     }
-                    console.log('challenge saved');
                 }
             } else {          
                 leaderboardEntry = await Leaderboard.create(score).catch(error => {

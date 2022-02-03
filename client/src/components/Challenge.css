@@ -7,9 +7,28 @@
     position: relative;
 }
 
+.hide {
+    display: none;
+}
+
 .versus-entry img, .versus-entry svg {
     height: 40px;
     float: left;
+}
+
+.versus-entry .winner {
+    position: absolute;
+    color: aqua;
+    font-size: 17px;
+    font-weight: bold;
+    top: 45px;
+}
+
+.versus-entry .winner.defending {
+    left: 50px;
+}
+.versus-entry .winner.challenger {
+    right: 40px;
 }
 
 .versus {
@@ -82,6 +101,22 @@
     padding: 0 6px 2px 6px;
     border-radius: 15px;
 }
+
+.player-card .points {
+    color: rgb(251 165 0);
+    position: absolute;
+    font-size: 14px;
+    white-space: nowrap;
+    position: absolute;
+    font-weight: bolder;
+    left: 50%;
+    top: 105px;
+    transform: translate(-50%,-50%);
+    background-color: #000000;
+    padding: 0 5px 2px 5px;
+    border-radius: 15px;
+}
+
 .player-card .picture {
     border-radius: 50%;
     left: 50%;

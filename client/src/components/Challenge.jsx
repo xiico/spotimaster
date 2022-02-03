@@ -3,7 +3,7 @@ import "./Challenge.css";
 import challengeService from '../services/challengeService';
 import format from '../modules/format';
 import ProfilePicture from './ProfilePicutre';
-import Flag from './Flag';
+// import Flag from './Flag';
 import Player from "./Player";
 import {Tab, Tabs} from './tabs';
 import runtimeEnv from '../modules/runtimeEnv';
@@ -47,6 +47,13 @@ export default function Challenge(props) {
         setchallengeinfo(challengeService.getinfo(challenge._id));
         setchallenge(challenge._id);
     }
+    const showWinner = (challenge) => {
+        if (challenge.winner){
+            if (challenge.defending.user._id === challenge.winner) return 'defending';
+            if (challenge.challenger.find(c => c.user._id === challenge.winner)) return 'challenger'
+        }
+        return 'hide';
+    }
 
     const cardOffset = (index) => {
         switch (index) {
@@ -64,11 +71,12 @@ export default function Challenge(props) {
         }
     }
 
-    const playerCard = (user, style) => {
+    const playerCard = (cr, style) => {
         return (
           <div className='player-card' style={style}>
-                {user.picture ? <img className='picture' alt="User" style={roundPicture} src={user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture css={'picture'} size={'medium'} />}
-                <div className="name" >{user.name}</div>
+                {cr.user.picture ? <img className='picture' alt="User" style={roundPicture} src={cr.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture css={'picture'} size={'medium'} />}
+                <div className="name" >{cr.user.name}</div>
+                <span className='points'>{format(cr.points, ' ')}</span>
           </div>
         );
       }
@@ -102,25 +110,26 @@ export default function Challenge(props) {
                 {latest ? latest.map((c, i) => {
                             return (
                                 <div key={i} className="versus-entry">
-                                    <div className='defending'>{playerCard(c.defending.user)}</div>
-                                    {c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr.user, cardOffset(k))}</div>)})}
-                                    <div className="points challenge-points" >{format(c.defending.points, ' ')}</div>
+                                    <span className={`winner ${showWinner(c)}`}>Winner!</span>
+                                    <div className='defending'>{playerCard(c.defending)}</div>
+                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k))}</div>)}) : ''}
+                                    <div className="points challenge-points" >{format(c.score, ' ')}</div>
                                     <div className='versus'>Vs</div>
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
                                     { canChallange(c) ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
-                                    { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ><img src='/img/share-icon.png'/></button> : ''}
+                                    { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ><img alt='share' src='/img/share-icon.png'/></button> : ''}
                                 </div>
                                 )
                         }) : ""}
                 </Tab>
                 <Tab id="Genre" call={getByGenre}>
                     {
-                        genres && genres.map((g, i) => {
-                            return (
-                                <div key={i} className="genre-entry">
-                                </div>
-                            );
-                        })
+                        // genres && genres.map((g, i) => {
+                        //     return (
+                        //         <div key={i} className="genre-entry">
+                        //         </div>
+                        //     );
+                        // })
                     }
                 </Tab>
             </Tabs>

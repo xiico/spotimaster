@@ -241,7 +241,7 @@ export default function Player(props) {
         setstarted(false);
         setcanplay(true);
       }, 3000);
-    }
+    } else if (props.run) leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard)
   }
   const renderChecks = (track) => {
     return (
@@ -336,7 +336,7 @@ export default function Player(props) {
       </div>
       {started ? renderCards() : (
         <div style={{margin:'auto'}}>          
-          <div className='message'>{ !props.run ? <span>You can use your own songs or pick a genre</span> : '' }</div> 
+          <div className='message'>{ !props.run ? <span>You can use your own songs or pick a genre</span> : <span>After start you can't go back, are you sure you want to start?</span> }</div> 
           <div className="div_start">
             <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
             { !props.run ? <Select ref={select} text="Choose an genre" items={genres} value={genre} ></Select> : '' }

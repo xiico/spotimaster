@@ -17,7 +17,7 @@ module.exports = (app) => {
                 populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
             }).populate({
                 path: 'challenger',
-                select: { 'user':1 },
+                select: { 'user':1, 'points': 1 },
                 populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
             }).sort({ date:-1 }).lean().limit(20);
             console.log('result: ', result.length);      
