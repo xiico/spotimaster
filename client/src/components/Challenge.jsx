@@ -7,26 +7,29 @@ import ProfilePicture from './ProfilePicutre';
 import Player from "./Player";
 import {Tab, Tabs} from './tabs';
 import runtimeEnv from '../modules/runtimeEnv';
+import "./Leaderboard.css";
+import Flag from './Flag';
 
 export default function Challenge(props) {
     // if (props.preview) props.preview.pause();
     const [latest, setlatest] = useState();
     const [challenge, setchallenge] = useState();
-    const [genres, setbygenres] = useState();
+    const [ranking, setranking] = useState();
     const [run, setrun] = useState();
     const [challengeinfo, setchallengeinfo] = useState();
     const params = props.history.match.params;
     const env = runtimeEnv();
+    const Link = props.link;
     const getLatest = async () => {
         if (!latest) {
             let result = await challengeService.latest();
             setlatest(result);
         }
     }
-    const getByGenre = async () => {
-        if (!genres) {
-            let result = await challengeService.get();
-            setbygenres(result);
+    const getByRanking = async () => {
+        if (!ranking) {
+            let result = await challengeService.getRanking();
+            setranking(result);
         }
     } 
     const getById = async () => {
@@ -41,6 +44,10 @@ export default function Challenge(props) {
     }
     const roundPicture = {
         borderRadius: '50%'
+    }
+    const bare = {
+        color: 'white',
+        textDecoration: 'none'
     }
     const startChallenge = async (challenge) => {
         setrun(challenge.defending);
@@ -122,15 +129,29 @@ export default function Challenge(props) {
                                 )
                         }) : ""}
                 </Tab>
-                <Tab id="Genre" call={getByGenre}>
-                    {
-                        // genres && genres.map((g, i) => {
-                        //     return (
-                        //         <div key={i} className="genre-entry">
-                        //         </div>
-                        //     );
-                        // })
-                    }
+                <Tab id="Ranking" call={getByRanking}>
+                    <div className="user_list">
+                        {
+                            ranking && ranking.map((u, i) => {
+                                return (
+                                    <div className="leaderboard_profile" key={u.id}>
+                                        <div className="leaderboard_profile_rank">{(i + 1)}</div>
+                                        <div className="leaderboard_picture" >
+                                            <a target="_blank" rel="noopener noreferrer" href={`https://open.spotify.com/user/${u.id}`}>
+                                                {(u.picture ? <img className="leaderboard_profile_picture" alt="Profile" src={u.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} /> : <ProfilePicture size={'big'} />)}
+                                            </a>
+                                        </div>
+                                        <div className="leaderboard_profile_info">
+                                            <Link style={bare} to={`/challenges/${u._id}`}><span className="leaderboard_profile_name">{u.name}</span></Link>                                    
+                                            <div className="leaderboard_profile_points"><span style={bare}>Wins: </span><span>{format(u.count)}</span></div>
+                                            <div className="leaderboard_profile_stats">
+                                                <Flag code={u.country} />
+                                            </div>
+                                        </div>
+                                    </div>);
+                            })
+                        }
+                    </div>
                 </Tab>
             </Tabs>
         );

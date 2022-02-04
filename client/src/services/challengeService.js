@@ -21,4 +21,9 @@ export default {
     let res = await axios.get(`/api/challengeoptions/${user}/${index}`);
     return res.data;
   },  
+  getRanking: async () => {
+    console.log('challenge_ranking');
+    let res = await axios.get(`/api/challengesranking`);
+    return res.data;
+  }, 
 }
