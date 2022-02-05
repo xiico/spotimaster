@@ -9,6 +9,7 @@ import {Tab, Tabs} from './tabs';
 import runtimeEnv from '../modules/runtimeEnv';
 import "./Leaderboard.css";
 import Flag from './Flag';
+import Loading from './Loading';
 
 export default function Challenge(props) {
     // if (props.preview) props.preview.pause();
@@ -127,12 +128,12 @@ export default function Challenge(props) {
                                     { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ><img alt='share' src='/img/share-icon.png'/></button> : ''}
                                 </div>
                                 )
-                        }) : ""}
+                        }) : <div className="loading"><Loading /></div>}
                 </Tab>
                 <Tab id="Ranking" call={getByRanking}>
                     <div className="user_list">
                         {
-                            ranking && ranking.map((u, i) => {
+                            ranking ? ranking.map((u, i) => {
                                 return (
                                     <div className="leaderboard_profile" key={u.id}>
                                         <div className="leaderboard_profile_rank">{(i + 1)}</div>
@@ -149,7 +150,7 @@ export default function Challenge(props) {
                                             </div>
                                         </div>
                                     </div>);
-                            })
+                            }) : <div className="loading"><Loading /></div>
                         }
                     </div>
                 </Tab>

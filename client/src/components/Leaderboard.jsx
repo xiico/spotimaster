@@ -6,6 +6,7 @@ import ProfilePicture from './ProfilePicutre';
 import Flag from './Flag';
 import {Tab, Tabs} from './tabs';
 import runtimeEnv from '../modules/runtimeEnv';
+import Loading from './Loading';
 
 export default function Leaderboard(props) {
     // if (props.preview) props.preview.pause();
@@ -65,12 +66,12 @@ export default function Leaderboard(props) {
                                     </div>
                                 </div>
                             </div>)
-                    }) : ""}
+                    }) : <div className="loading"><Loading /></div>}
                 </div>
             </Tab>
             <Tab id="Genre" call={getGenres}>
                 {
-                    genres && genres.map((g, i) => {
+                    genres ? genres.map((g, i) => {
                         return (
                             <div key={i} className="genre-entry">
                                 <span className="genre-name">{g._id}</span>
@@ -86,7 +87,7 @@ export default function Leaderboard(props) {
                                 })}
                             </div>
                         );
-                    })
+                    }) : <div className="loading"><Loading /></div>
                 }
             </Tab>
         </Tabs>
