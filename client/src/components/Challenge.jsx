@@ -125,7 +125,7 @@ export default function Challenge(props) {
                                     <div className='versus'>Vs</div>
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
                                     { canChallange(c) ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
-                                    { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ><img alt='share' src='/img/share-icon.png'/></button> : ''}
+                                    { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ></button> : ''}
                                 </div>
                                 )
                         }) : <div className="loading"><Loading /></div>}

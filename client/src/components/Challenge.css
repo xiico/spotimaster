@@ -136,9 +136,8 @@
     transform: translate(-50%,-50%);
     width: 22px;
     height: 22px;
-}
-.share img {
-    padding: 0;
-    width: 16px;
-    height: 16px; 
+    background-image:url(/img/share-icon.png);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: left 1px top 1px;
 }
