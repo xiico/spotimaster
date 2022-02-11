@@ -49,7 +49,7 @@ function App(props) {
           </Route>
           <Route exact path="/leaderboard" render={(history) => <Leaderboard link={Link} history={history} user={user} preview={preview} ></Leaderboard>} />
           <Route exact path="/challenges/:id?" render={(history) => <React.StrictMode><Challenge link={Link} history={history} user={user} preview={preview} setpreview={setpreview}  ></Challenge></React.StrictMode>} />
-        </Switch>        
+        </Switch>
       </div>
     </Router>
   );

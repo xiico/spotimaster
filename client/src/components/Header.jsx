@@ -28,7 +28,7 @@ export default function Header(props) {
                         props.user
                             ?
                             <div>
-                                <span className="profile-name">{props.user.display_name}</span>
+                                <span title={props.user.display_name} className="profile-name">{props.user.display_name}</span>
                                 {( props.user.images[0] ? <img style={pointer} title="Log Out" alt="Profile" onClick={() => logOut()} className="profile-picture" src={props.user.images[0].url}></img> : <ProfilePicture pointer={pointer} onClick={() => logOut()} size={'small'} />)}
                             </div>
                             :

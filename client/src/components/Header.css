@@ -42,7 +42,16 @@
         color: white;
         text-align: center;
         float: left;
-        /* margin-top: 16px; */
-        margin-right: 4px;
-        font-size: 14px;
+        margin-top: 4px;
+        margin-right: 0px;
+        font-size: 13px;
+        width: 96px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    @media all and (max-width: 400px){
+        .profile-name{        
+            width: 63px;
+        }
     }
