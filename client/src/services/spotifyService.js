@@ -79,6 +79,16 @@ export default {
         }
         return (res || {}).data;
     },
+    checksaved: async (tracks) => {
+        let res;
+        try {
+            res = await axios.get(`https://api.spotify.com/v1/me/tracks/contains?ids=${tracks.toString()}`, getConfig());
+        } catch (error) {
+            console.log(error)
+            if(error.response.status === 401) refreshToken();
+        }
+        return (res || {}).data;
+    },
     refreshToken: refreshToken
 }
 

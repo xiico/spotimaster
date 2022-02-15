@@ -7,6 +7,7 @@ import runtimeEnv from '../modules/runtimeEnv';
 import Card from "./Card";
 import Next from "./Next";
 import Score from "./Score"
+import Like from "./Like";
 import isMobileDevice from "../modules/isMobileDevice";
 import Loading from './Loading';
 import format from '../modules/format';
@@ -38,9 +39,13 @@ export default function Player(props) {
   const [genre, setgenre] = useState();
   const [answears, setanswears] = useState([]);
   const [leaderboard, setleaderboard] = useState();
+  const [running, setrunning] = useState(false);
+  const [liked, setliked] = useState(false);
+  const [showlike, setshowlike] = useState(false);
   // const [challenge, setchallenge] = useState();
   // const [preview, setpreview] = useState(false);
   const next = useRef();
+  const like = useRef();
   const select = useRef();
   const preview = props.preview;
   const setpreview = props.setpreview;
@@ -136,6 +141,7 @@ export default function Player(props) {
       setstarttime(new Date().getTime());
       shuffleArray(recommendations.tracks);
       setoptions(recommendations);
+      await checkSaved(recommendations);
       var rand = recommendations.tracks[Math.floor(Math.random() * recommendations.tracks.length)];
       setanswears([...answears, getSimpleTrack(rand)])
       setoptionshistory([...optionshistory,recommendations.tracks.map(t => t.id)]);
@@ -146,19 +152,29 @@ export default function Player(props) {
       // console.log("rand: ", rand);
       setseed(recommended || track);
       setcurtrack(rand.id);
+      setliked(recommendations.tracks.find(t => rand.id).liked);   
     } else {      
-      let recomendations = await getOptions(props.run, 19 - tracklist.length);
+      let recommendations = await getOptions(props.run, 19 - tracklist.length);
       setcanplay(false);
       setstarttime(new Date().getTime());
-      setoptions(recomendations);
-      let song = recomendations.tracks.find(t => t.id === recomendations.song);
+      setoptions(recommendations);
+      await checkSaved(recommendations);
+      let song = recommendations.tracks.find(t => t.id === recommendations.song);
       setanswears([...answears, getSimpleTrack(song)])
       let p = await spotifyService.play(device, song, 0, usepreview, preview);
       setpreview(p);
       setseed(song);
-      setcurtrack(recomendations.song);      
+      setcurtrack(recommendations.song);   
+      setliked(recommendations.tracks.find(t => recommendations.song).liked);   
     }
     setTimeout(() => next.current.start(), 300);
+    setshowlike(false);
+  }
+  const checkSaved = async (recommendations) => {
+    let saved = await spotifyService.checksaved(recommendations.tracks.map(t => t.id));
+    recommendations.tracks.forEach(track => {
+      track.liked = saved.includes(track.id);
+    });
   }
   const createTrackList = (trl, g) => {
     if (trl) {
@@ -214,6 +230,7 @@ export default function Player(props) {
   }
   const checkAnwser = (track) => {
     next.current.reset();
+    setliked(false);
     let ccombo = combo; // current combo;
     let ccorrect = correct;
     let trk = answears.find(e => e.id === curtrack);
@@ -240,8 +257,10 @@ export default function Player(props) {
         setshowscore(true);
         setstarted(false);
         setcanplay(true);
+        setshowlike(true);
       }, 3000);
-    } else if (props.run) leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard)
+    } else if (props.run) leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard)    
+    setshowlike(true);
   }
   const renderChecks = (track) => {
     return (
@@ -346,14 +365,17 @@ export default function Player(props) {
       {(seed ? (
         <div className="score_info" >
           {<Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
-          <Next hide={!(tracklist || {}).length} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
+          <div className='player-buttons'>
+            <Next hide={!(tracklist || {}).length} running={running} setrunning={setrunning} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
+            <Like hidden={!showlike} liked={liked} ref={like} onClick={(p) => { setliked(true); }} ></Like>
+          </div>
           {(started && !props.run ? <Card  seed={seed}
                   artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
                   image={seed.album ? seed.album.images.find(a => a.width === 300).url : seed.image} 
                   track={seed.name || seed.track} genre={genre}
                 ></Card> : "")}
         </div>
-      ) : <div></div>)}
+      ) : <div className="score_info"></div>)}
     </div>
   )
   function calculateScore(ccombo) {

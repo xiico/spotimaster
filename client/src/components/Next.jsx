@@ -1,9 +1,11 @@
 import React, { useState, useImperativeHandle, useRef, forwardRef } from 'react';
 import './Next.css';
 const Next = forwardRef((props, ref) => {
-    const [running, setrunning] = useState(false);
+    // const [running, setrunning] = useState(false);
     const [timers, setimers] = useState([]);
     const btn = useRef();
+    let running = props.running;
+    let setrunning = props.setrunning;
     useImperativeHandle(ref, () => ({
         reset() {
             clearTimeout(timers[0]);

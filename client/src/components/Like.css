@@ -1,0 +1,31 @@
+.track-status {
+    /* position: absolute; */
+    width: 20px;
+    height: 20px;
+    background-image: url(/img/heart.svg);
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    margin-left: 4px;
+}
+.liked {
+    background-image: url(/img/heart_full.svg);
+    animation: liked 0.5s ease;
+    -webkit-animation: liked 0.5s ease;
+}
+.hidden {
+    background-image: initial;
+}
+.not-liked:hover {
+    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(0deg) brightness(250%) contrast(100%);
+}
+@keyframes liked {
+    from{transform:scale(0)}
+    80%{transform:scale(1.2)}
+    to{transform:scale(1)}
+}
+@-webkit-keyframes liked {
+    from{-webkit-transform:scale(0)}
+    80%{-webkit-transform:scale(1.2)}
+    to{-webkit-transform:scale(1)}
+}
+    
