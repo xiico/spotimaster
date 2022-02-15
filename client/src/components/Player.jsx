@@ -257,7 +257,6 @@ export default function Player(props) {
         setshowscore(true);
         setstarted(false);
         setcanplay(true);
-        setshowlike(true);
       }, 3000);
     } else if (props.run) leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard)    
     setshowlike(true);
@@ -366,8 +365,8 @@ export default function Player(props) {
         <div className="score_info" >
           {<Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
           <div className='player-buttons'>
-            <Next hide={!(tracklist || {}).length} running={running} setrunning={setrunning} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
-            <Like hidden={!showlike} liked={liked} ref={like} onClick={(p) => { setliked(true); }} ></Like>
+            <Next hide={!(tracklist || {}).length} setshowlike={setshowlike} running={running} setrunning={setrunning} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
+            <Like hidden={!showlike} liked={liked} ref={like} onClick={(p) => { toggleliked(curtrack) }} ></Like>
           </div>
           {(started && !props.run ? <Card  seed={seed}
                   artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
@@ -378,6 +377,17 @@ export default function Player(props) {
       ) : <div className="score_info"></div>)}
     </div>
   )
+
+  async function toggleliked(track) {
+    if (!liked) {
+      let saved = await spotifyService.save(track);
+      if (saved === '') setliked(true);
+    } else {
+      let removed = await spotifyService.remove(track);
+      if (removed === '') setliked(false);      
+    }
+  }
+
   function calculateScore(ccombo) {
     if(ccombo > maxcombo) setmaxcombo(ccombo);
     let ps = (30000 - Math.min(30000, new Date().getTime() - starttime)) * ccombo;

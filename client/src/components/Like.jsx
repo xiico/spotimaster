@@ -11,7 +11,7 @@ const Like = forwardRef((props, ref) => {
     //     },
     // }));
     return (
-        <div ref={btn} className={`track-status${(props.hidden ? " hidden" : "")}${props.liked ? ' liked' : ' not-liked'}`} onClick={props.onClick}>
+        <div ref={btn} className={`track-status${(props.hidden ? " show-like" : "")}${props.liked ? ' liked' : ' not-liked'}`} onClick={props.onClick}>
         </div>
     );
 });

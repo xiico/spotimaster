@@ -89,6 +89,26 @@ export default {
         }
         return (res || {}).data;
     },
+    save: async (track) => {
+        let res;
+        try {
+            res = await axios.put(`https://api.spotify.com/v1/me/tracks?ids=${track}`, {}, getConfig());
+        } catch (error) {
+            console.log(error)
+            if(error.response.status === 401) refreshToken();
+        }
+        return (res || {}).data;
+    },
+    remove: async (track) => {
+        let res;
+        try {
+            res = await axios.delete(`https://api.spotify.com/v1/me/tracks?ids=${track}`, getConfig());
+        } catch (error) {
+            console.log(error)
+            if(error.response.status === 401) refreshToken();
+        }
+        return (res || {}).data;
+    },
     refreshToken: refreshToken
 }
 

@@ -6,6 +6,7 @@ const Next = forwardRef((props, ref) => {
     const btn = useRef();
     let running = props.running;
     let setrunning = props.setrunning;
+    let setshowlike = props.setshowlike;
     useImperativeHandle(ref, () => ({
         reset() {
             clearTimeout(timers[0]);
@@ -39,6 +40,7 @@ const Next = forwardRef((props, ref) => {
                         btn.current.classList.remove("done");
                     }
                     setrunning(false);
+                    setshowlike(true);
                 }, 30100);
                 setimers(tmrs);
             }
