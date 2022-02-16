@@ -40,7 +40,7 @@ const Next = forwardRef((props, ref) => {
                         btn.current.classList.remove("done");
                     }
                     setrunning(false);
-                    setshowlike(true);
+                    // setshowlike(true);
                 }, 30100);
                 setimers(tmrs);
             }
