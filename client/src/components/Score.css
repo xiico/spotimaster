@@ -22,7 +22,7 @@
   }
   
   .fade-in {
-    top: 0;
+    top: 40px;
     opacity: 1;
     transition: opacity 0.5s;
   }
@@ -38,6 +38,7 @@
     opacity: 0;
     transition: all 1.5s;
     font-family: 'Lato', sans-serif;
+    position: relative;
   }
   
   .score {
@@ -45,13 +46,6 @@
     letter-spacing: 3px;
   }
   
-  .head {
-    font-size: 30px;
-    line-height: 40px;
-    transform: translateY(40px);
-    transition: all 1.7s;
-    font-family: 'Anton', sans-serif;
-  }
   .head hr {
     display: block;
     width: 0;
@@ -63,24 +57,7 @@
     transition: all 1.5s;
   }
   
-  .hits {
-    font-size: 22px;
-    line-height: 10px;
-    font-weight: bold;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 1.7s;
-  }
   
-  .again {
-    font-size: 12px;
-    opacity: 0;
-    letter-spacing: 1px;
-    font-family: 'Lato', sans-serif;
-    transform: translateY(40px);
-    transition: all 1.7s;
-    margin-top: 60px;
-  }
   .again i {
     font-size: 16px;
   }
@@ -91,27 +68,81 @@
   .show .overlay {
     opacity: 1;
   }
-  .show .overlay .head {
-    transform: translateY(0px);
-    
-  }
   .show .overlay hr {
     width: 75px;
     transition-delay: 1.4s;
   }
-  .show .overlay .hits {
-    transform: translateY(0px);
-    transition-delay: 1.3s;
-    opacity: 1;
+
+  .score .points {
+    color: orange;
   }
+  .score_info .player-card .winner {
+    position: absolute;
+    transform: translate(-50%,-50%);
+    bottom: 110px;
+    left: 50%;
+    color: aqua;
+    position: absolute;
+    font-weight: bolder;
+  }
+  .score_info .player-card .picture {
+    top: initial;
+    bottom: 20px;
+  }
+  .score_info .player-card .name {
+    top: initial;
+    bottom: 35px;
+  }
+
   .show .overlay .again {
     transform: translateY(0px);
     transition-delay: 2.6s;
     opacity: 1;
   }
+  .again {
+    font-size: 12px;
+    opacity: 0;
+    letter-spacing: 1px;
+    font-family: 'Lato', sans-serif;
+    transform: translateY(40px);
+    transition: all 1.7s;
+    margin-top: 60px;
+  }
 
-  .score .points {
-    color: orange;
+  .show .overlay .hits {
+    transform: translateY(0px);
+    transition-delay: 1.3s;
+    opacity: 1;
+  }
+  .hits {
+    font-size: 22px;
+    line-height: 10px;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1.7s;
+  }
+
+  .show .overlay .head {
+    transform: translateY(0px);    
+  }
+  .head {
+    font-size: 30px;
+    line-height: 40px;
+    transform: translateY(40px);
+    transition: all 1.7s;
+    font-family: 'Anton', sans-serif;
+  }
+
+  .show .player-card.slide-in {
+    transform: translateY(50px);
+    transition-delay: 2.4s;
+    opacity: 1;
+  }  
+  .slide-in {
+    transform: translateY(100px);
+    transition: all 1.7s;
+    opacity: 0;
   }
   
   @media all and (max-width: 1200px) {

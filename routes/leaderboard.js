@@ -30,7 +30,7 @@ module.exports = (app) => {
                     challenge.challenger.push(leaderboardEntry._id);
                     challenge.save();
                 } else {
-                    leaderboardEntry = await Leaderboard.findById(req.query.leaderboard).catch(error => {
+                    leaderboardEntry = await Leaderboard.findById(req.query.leaderboard).populate({ path: 'user', model: User }).catch(error => {
                         return res.status(500).send(error);
                     });  
                     leaderboardEntry = setValues(leaderboardEntry, score);
@@ -38,8 +38,8 @@ module.exports = (app) => {
                     let challenge = await Challenge.findById(req.query.challenge).populate({ path: 'defending', model: Leaderboard });
                     console.log('lscore,cscore',leaderboardEntry.points,challenge.score);
                     console.log('leaderboardEntry:',leaderboardEntry);
-                    if (leaderboardEntry.points > challenge.score) {
-                        challenge.winner = leaderboardEntry.user;
+                    if (leaderboardEntry.points > challenge.defending.points) {
+                        challenge.winner = leaderboardEntry.user._id;
                         challenge.score = leaderboardEntry.points;
                         challenge.save();
                         console.log('challenger saved:', leaderboardEntry.user);

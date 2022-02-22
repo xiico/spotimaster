@@ -10,6 +10,8 @@ import runtimeEnv from '../modules/runtimeEnv';
 import "./Leaderboard.css";
 import Flag from './Flag';
 import Loading from './Loading';
+import './Button.css';
+import PlayerCard from "./PlayerCard";
 
 export default function Challenge(props) {
     // if (props.preview) props.preview.pause();
@@ -53,15 +55,15 @@ export default function Challenge(props) {
     const startChallenge = async (challenge) => {
         setrun(challenge.defending);
         setchallengeinfo(challengeService.getinfo(challenge._id));
-        setchallenge(challenge._id);
+        setchallenge(challenge);
     }
-    const showWinner = (challenge) => {
-        if (challenge.winner){
-            if (challenge.defending.user._id === challenge.winner) return 'defending';
-            if (challenge.challenger.find(c => c.user._id === challenge.winner)) return 'challenger'
-        }
-        return 'hide';
-    }
+    // const showWinner = (challenge) => {
+    //     if (challenge.winner){
+    //         if (challenge.defending.user._id === challenge.winner) return 'winner';
+    //         if (challenge.challenger.find(c => c.user._id === challenge.winner)) return 'winner'
+    //     }
+    //     return 'hide';
+    // }
 
     const cardOffset = (index) => {
         switch (index) {
@@ -79,13 +81,9 @@ export default function Challenge(props) {
         }
     }
 
-    const playerCard = (cr, style) => {
+    const playerCard = (cr, style, winner) => {
         return (
-          <div className='player-card' style={style}>
-                {cr.user.picture ? <img className='picture' alt="User" style={roundPicture} src={cr.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture css={'picture'} size={'medium'} />}
-                <div className="name" >{cr.user.name}</div>
-                <span className='points'>{format(cr.points, ' ')}</span>
-          </div>
+         <PlayerCard winner={winner} cr={cr} user={cr.user} style={style} points={cr.points}></PlayerCard>
         );
       }
     const renderPlayer = () => {
@@ -118,9 +116,9 @@ export default function Challenge(props) {
                 {latest ? latest.map((c, i) => {
                             return (
                                 <div key={i} className="versus-entry">
-                                    <span className={`winner ${showWinner(c)}`}>Winner!</span>
-                                    <div className='defending'>{playerCard(c.defending)}</div>
-                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k))}</div>)}) : ''}
+                                    {/* <span className={`winner ${showWinner(c)}`}>Winner!</span> */}
+                                    <div className='defending'>{playerCard(c.defending, null, c.winner)}</div>
+                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner)}</div>)}) : ''}
                                     <div className="points challenge-points" >{format(c.score, ' ')}</div>
                                     <div className='versus'>Vs</div>
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>

@@ -167,7 +167,9 @@ export default function Player(props) {
       setcurtrack(recommendations.song);   
       setliked(recommendations.tracks.find(t => recommendations.song).liked);   
     }
-    setTimeout(() => next.current.start(), 300);
+    
+      setTimeout(() => {try {next.current.start()} catch {}}, 300);      
+    
     setshowlike(false);
   }
   const checkSaved = async (recommendations) => {
@@ -228,7 +230,7 @@ export default function Player(props) {
       return null;
     }
   }
-  const checkAnwser = (track) => {
+  const checkAnswer = async (track) => {
     next.current.reset();
     setliked(false);
     let ccombo = combo; // current combo;
@@ -251,14 +253,14 @@ export default function Player(props) {
     if (!tracklist.length) {
       setanswears([]);
       setoptionshistory([]);
-      setleaderboard(leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard));
+      setleaderboard(await leaderboardService.insert(scr, props.user.id, (props.challenge || {})._id,leaderboard));
       settracklist(null);
       setTimeout(() => {
         setshowscore(true);
         setstarted(false);
         setcanplay(true);
       }, 3000);
-    } else if (props.run) leaderboardService.insert(scr, props.user.id, props.challenge,leaderboard)    
+    } else if (props.run) setleaderboard(await leaderboardService.insert(scr, props.user.id, (props.challenge || {})._id,leaderboard));
     setshowlike(true);
   }
   const renderChecks = (track) => {
@@ -287,7 +289,7 @@ export default function Player(props) {
                   artist={option.artists ? option.artists.map(e => ` ${e.name}`).toString().trimStart() : option.artist}
                   image={option.album ? (option.album.images.find(a => a.width === 300) || { url: '' }).url : option.image}
                   track={option.name || option.track}
-                  onClick={() => checkAnwser(option)}
+                  onClick={() => checkAnswer(option)}
                 ></Card>
                 {renderChecks(option)}
               </div>
@@ -299,7 +301,19 @@ export default function Player(props) {
     );
   }
   const start = async () => {
-    if (preview) preview.play();
+    if (preview) {      
+      var playPromise = preview.play();;
+
+      // In browsers that don’t yet support this functionality,
+      // playPromise won’t be defined.
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
+          log('playback started.');
+        }).catch(function(error) {
+          log('playback eror.', error);
+        });
+      }
+    }
     let g;
     if (select.current) {
       log("genre: ", select.current.getValue());
@@ -326,7 +340,7 @@ export default function Player(props) {
     setanswears([]);
     setoptionshistory([]);
     if (props.run) {
-      let lboard = await leaderboardService.insert(createRun(genre, 0, plsize, 0, 0, 0, [], []), props.user.id, props.challenge);
+      let lboard = await leaderboardService.insert(createRun(genre, 0, plsize, 0, 0, 0, [], []), props.user.id, props.challenge._id);
       setleaderboard(lboard);
     }
   }
@@ -354,7 +368,7 @@ export default function Player(props) {
       </div>
       {started ? renderCards() : (
         <div style={{margin:'auto'}}>          
-          <div className='message'>{ !props.run ? <span>You can use your own songs or pick a genre</span> : <span>After start you can't go back, are you sure you want to start?</span> }</div> 
+          <div className='message'>{ !props.run ? <span>You can use your own songs or pick a genre</span> : !showscore ? <span>After start you can't go back, are you sure you want to start?</span> : '' }</div> 
           <div className="div_start">
             <button className={`start start_button${((canstart || usepreview) && !showscore ? "" : " hidden")}`} onClick={() => start()}>Start</button>
             { !props.run ? <Select ref={select} text="Choose an genre" items={genres} value={genre} ></Select> : '' }
@@ -363,7 +377,7 @@ export default function Player(props) {
       )}
       {(seed ? (
         <div className="score_info" >
-          {<Score showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
+          {<Score challenge={props.challenge} leaderboard={leaderboard} run={props.run} showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
           <div className='player-buttons'>
             <Next hide={!(tracklist || {}).length} setshowlike={setshowlike} running={running} setrunning={setrunning} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
             <Like hidden={!showlike} liked={liked} ref={like} onClick={(p) => { toggleliked(curtrack) }} ></Like>
