@@ -83,7 +83,7 @@ export default function Challenge(props) {
 
     const playerCard = (cr, style, winner) => {
         return (
-         <PlayerCard winner={winner} cr={cr} user={cr.user} style={style} points={cr.points}></PlayerCard>
+         <PlayerCard link={Link} winner={winner} cr={cr} user={cr.user} style={style} points={cr.points}></PlayerCard>
         );
       }
     const renderPlayer = () => {
@@ -111,7 +111,7 @@ export default function Challenge(props) {
 
     const renderTabs = () => {
         return (          
-            <Tabs default={0}>
+            <Tabs key={window.location.pathname} default={0}>
                 <Tab id="Latest" call={!params.id ? getLatest : getById}>
                 {latest ? latest.map((c, i) => {
                             return (
@@ -120,7 +120,7 @@ export default function Challenge(props) {
                                     <div className='defending'>{playerCard(c.defending, null, c.winner)}</div>
                                     {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner)}</div>)}) : ''}
                                     <div className="points challenge-points" >{format(c.score, ' ')}</div>
-                                    <div className='versus'>Vs</div>
+                                    <Link to={`/challenges/${c._id}`}><div className='versus'>Vs</div></Link>  
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
                                     { canChallange(c) ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
                                     { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ></button> : ''}

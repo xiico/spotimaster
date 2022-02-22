@@ -1,12 +1,9 @@
 .versus-entry {
-    background-color: #122;
     width: 400px;
     margin: 10px;
     height: 200px;
-    background: radial-gradient(#2a09e2, #000000);
+    background: radial-gradient(#0035f7, #000736fa);
     position: relative;
-    border: 2px solid #464646;
-    border-radius: 17px;
 }
 
 .hide {

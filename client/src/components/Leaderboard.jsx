@@ -82,6 +82,7 @@ export default function Leaderboard(props) {
                                             <div className="tabs-user-name" >{s.user.name}</div>
                                             <div className="tabs-user-points" >{format(s.points, ' ')}</div>
                                             { props.user && props.user.id !== s.user.id ? <Link style={challenge} to={`/challenges/${s._id}`}>Challenge</Link> : ''}
+                                            <span className='user-ranking'>{k+1}</span>
                                         </div>
                                     )
                                 })}

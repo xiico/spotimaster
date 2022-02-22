@@ -20,9 +20,9 @@ export default function Header(props) {
         <div>
             <Menu link={props.link} />
             <ul>
-                <li><NavLink to="/leaderboard">Leaderboard</NavLink></li>
+                <li><NavLink to="/leaderboard/#">Leaderboard</NavLink></li>
                 <li><span>|</span></li>
-                <li><NavLink to="/challenges">Challenges</NavLink></li>
+                <li><NavLink to="/challenges/#">Challenges</NavLink></li>
                 <li className="profile-picture">
                     {(
                         props.user

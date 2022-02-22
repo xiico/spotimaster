@@ -45,7 +45,6 @@
     height: 209px;
     /* background-image: url(genrebg.png); */
     background-size: contain;
-    border-radius: 10px;
 }
 
 .genre-entry img, .genre-entry svg {
@@ -68,7 +67,14 @@
     background-color: rgba(0,0,0,0.8);
     padding: 4px;
     position: relative;
-    border-radius: 4px;
+}
+.tabs-user .user-ranking{
+    color: white;
+    position: absolute;
+    right: 5px;
+    font-weight: bold;
+    font-size: 15px;
+    top: 2px;
 }
 .tabs-user-name{
     display: inline;
