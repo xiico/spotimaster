@@ -7,6 +7,7 @@ import Flag from './Flag';
 import {Tab, Tabs} from './tabs';
 import runtimeEnv from '../modules/runtimeEnv';
 import Loading from './Loading';
+import PlayerListSimple from './PlayerListSimple';
 
 export default function Leaderboard(props) {
     // if (props.preview) props.preview.pause();
@@ -72,22 +73,7 @@ export default function Leaderboard(props) {
             <Tab id="Genre" call={getGenres}>
                 {
                     genres ? genres.map((g, i) => {
-                        return (
-                            <div key={i} className="genre-entry">
-                                <span className="genre-name">{g._id}</span>
-                                {g.scores.map((s, k) => {
-                                    return (
-                                        <div key={k} className="tabs-user">
-                                            {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture />}
-                                            <div className="tabs-user-name" >{s.user.name}</div>
-                                            <div className="tabs-user-points" >{format(s.points, ' ')}</div>
-                                            { props.user && props.user.id !== s.user.id ? <Link style={challenge} to={`/challenges/${s._id}`}>Challenge</Link> : ''}
-                                            <span className='user-ranking'>{k+1}</span>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        );
+                        return (<PlayerListSimple g={g} i={i} challenge={challenge}></PlayerListSimple>);
                     }) : <div className="loading"><Loading /></div>
                 }
             </Tab>

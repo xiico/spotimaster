@@ -12,6 +12,7 @@ import Flag from './Flag';
 import Loading from './Loading';
 import './Button.css';
 import PlayerCard from "./PlayerCard";
+import PlayerListSimple from './PlayerListSimple';
 
 export default function Challenge(props) {
     // if (props.preview) props.preview.pause();
@@ -115,15 +116,16 @@ export default function Challenge(props) {
                 <Tab id="Latest" call={!params.id ? getLatest : getById}>
                 {latest ? latest.map((c, i) => {
                             return (
-                                <div key={i} className="versus-entry">
+                                <div key={i} className={`versus-entry ${ latest.length === 1 ? 'lb' : ''}`}>
                                     {/* <span className={`winner ${showWinner(c)}`}>Winner!</span> */}
                                     <div className='defending'>{playerCard(c.defending, null, c.winner)}</div>
-                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner)}</div>)}) : ''}
+                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner)}</div>)})[0] : ''}
                                     <div className="points challenge-points" >{format(c.score, ' ')}</div>
                                     <Link to={`/challenges/${c._id}`}><div className='versus'>Vs</div></Link>  
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
                                     { canChallange(c) ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
                                     { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ></button> : ''}
+                                    {c.challenger && c.challenger.length && latest.length === 1 ? <PlayerListSimple lb={true} link={Link} g={{scores: c.challenger}} challenge={challenge}></PlayerListSimple> : ''}
                                 </div>
                                 )
                         }) : <div className="loading"><Loading /></div>}
