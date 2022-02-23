@@ -39,7 +39,7 @@ module.exports = (app) => {
                 path: 'challenger',
                 select: { 'user': 1, 'points': 1 },
                 populate: { path: 'user', select: { 'name': 1, 'picture': 1, 'id': 1 }, model: User }, model: Leaderboard
-            }).sort({ date: -1 }).lean().limit(25);
+            }).sort({ date: -1 }).lean().limit(req.params.id ? 100 : 25);
             return result;
         }
     });
@@ -90,7 +90,8 @@ module.exports = (app) => {
         let result
         try {
             result = await Challenge.aggregate(getRanking());
-            console.log('challengesranking:',result);
+            // console.log('challengesranking:',result);
+            console.log('challengesranking:',result.length);
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);

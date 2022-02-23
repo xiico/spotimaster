@@ -25,10 +25,8 @@ export default function Challenge(props) {
     const env = runtimeEnv();
     const Link = props.link;
     const getLatest = async () => {
-        if (!latest) {
-            let result = await challengeService.latest();
-            setlatest(result);
-        }
+        let result = await challengeService.latest();
+        setlatest(result);
     }
     const getByRanking = async () => {
         if (!ranking) {
@@ -58,13 +56,6 @@ export default function Challenge(props) {
         setchallengeinfo(challengeService.getinfo(challenge._id));
         setchallenge(challenge);
     }
-    // const showWinner = (challenge) => {
-    //     if (challenge.winner){
-    //         if (challenge.defending.user._id === challenge.winner) return 'winner';
-    //         if (challenge.challenger.find(c => c.user._id === challenge.winner)) return 'winner'
-    //     }
-    //     return 'hide';
-    // }
 
     const cardOffset = (index) => {
         switch (index) {
@@ -112,7 +103,7 @@ export default function Challenge(props) {
 
     const renderTabs = () => {
         return (          
-            <Tabs key={window.location.pathname} default={0}>
+            <Tabs key={window.location.pathname} location={props.history.location} default={0}>
                 <Tab id="Latest" call={!params.id ? getLatest : getById}>
                 {latest ? latest.map((c, i) => {
                             return (
