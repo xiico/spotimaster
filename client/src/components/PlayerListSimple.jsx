@@ -13,7 +13,7 @@ export default function PlayerListSimple(props){
     return (
         <div key={i} className={`genre-entry ${g._id ? '' : 'lb'}`}>
             {<span className="genre-name">{g._id ? g._id : 'Leaderboard'}</span>}
-            {g.scores.map((s, k) => {
+            {g.scores.sort((a,b) => b.points - a.points).map((s, k) => {
                 return (
                     <div key={k} className="tabs-user">
                         {s.user.picture ? <img alt="User" style={roundPicture} src={s.user.picture} onError={(e) => {if (e.target.src !== '/img/user.png') e.target.src = '/img/user.png';}} />:<ProfilePicture />}

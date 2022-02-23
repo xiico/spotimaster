@@ -112,7 +112,7 @@ export default function Challenge(props) {
                                     <div className='defending'>{playerCard(c.defending, null, c.winner)}</div>
                                     {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner)}</div>)})[0] : ''}
                                     <div className="points challenge-points" >{format(c.score, ' ')}</div>
-                                    <Link to={`/challenges/${c._id}`}><div className='versus'>Vs</div></Link>  
+                                    <Link to={`/challenges/${c._id}`}><div className={`versus${latest.length === 1 ? ' disabled-link' : '' }`}>Vs</div></Link>  
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>
                                     { canChallange(c) ? <button className='challenge' onClick={() => startChallenge(c)}>Challenge</button> : ''}
                                     { props.user ? <button className='share' style={canChallange(c) ? shareChallenge : null}  onClick={() => share(c)} ></button> : ''}

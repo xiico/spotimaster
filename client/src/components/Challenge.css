@@ -158,3 +158,6 @@
     height: initial;
     min-height: 200px;
 }
+.disabled-link {
+    pointer-events: none;
+}
