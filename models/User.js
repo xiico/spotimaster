@@ -10,6 +10,7 @@ const userSchema = new Schema({
     country: String,
     challengeScore: Number,
     sessionId: String,
+    allowSaveTrack: Boolean,
 })
 
 mongoose.model('users', userSchema);

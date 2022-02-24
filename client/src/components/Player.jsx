@@ -42,6 +42,7 @@ export default function Player(props) {
   const [running, setrunning] = useState(false);
   const [liked, setliked] = useState(false);
   const [showlike, setshowlike] = useState(false);
+  const [savetracks, setsavetracks] = useState(false);
   // const [challenge, setchallenge] = useState();
   // const [preview, setpreview] = useState(false);
   const next = useRef();
@@ -51,6 +52,8 @@ export default function Player(props) {
   const setpreview = props.setpreview;
   useEffect(() => {
     const existingScript = document.getElementById('player');
+    let save = localStorage.allowSaveTrack === "true";
+    setsavetracks(save);
     let plr;
     if (!existingScript && !usepreview) {
       const script = document.createElement('script');
@@ -261,7 +264,7 @@ export default function Player(props) {
         setcanplay(true);
       }, 3000);
     } else if (props.run) setleaderboard(await leaderboardService.insert(scr, props.user.id, (props.challenge || {})._id,leaderboard));
-    setshowlike(true);
+    setshowlike(true && savetracks);
   }
   const renderChecks = (track) => {
     return (

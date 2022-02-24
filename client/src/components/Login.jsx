@@ -10,7 +10,7 @@ import Anchor from './Anchor';
 import runtimeEnv from '../modules/runtimeEnv';
 import log from '../modules/log';
 
-export default function Login() {
+export default function Login(props) {
     // const [users, setusers] = useState(null);
     const generateRandomString = function (length) {
         var text = '';
@@ -24,6 +24,9 @@ export default function Login() {
     const state = generateRandomString(16);
     var stateKey = 'spotify_auth_state';
     const env = runtimeEnv();
+    // const savetrack =  () => {
+    //     return localStorage.allowSaveTrack === "true";
+    // }
 
     useEffect(() => {
         Cookies.set(stateKey, state);
@@ -33,7 +36,7 @@ export default function Login() {
         return queryString.stringify({
             response_type: 'code',
             client_id: 'e303f193728348cc8ee76730b6f21e1e',
-            scope: 'user-read-private user-top-read playlist-modify-public user-library-modify user-library-read',
+            scope: `user-read-private user-top-read user-library-read ${props.savetracks ? 'user-library-modify' : ''}`,
             // redirect_uri: `http://localhost:5000/callback`,
             // redirect_uri: `http://trackguesser.herokuapp.com/callback`,
             redirect_uri: `${env.REACT_APP_HOST_API}/callback`,
