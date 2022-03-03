@@ -73,9 +73,9 @@ export default function Challenge(props) {
         }
     }
 
-    const playerCard = (cr, style, winner) => {
+    const playerCard = (cr, style, winner, playercount) => {
         return (
-         <PlayerCard link={Link} winner={winner} cr={cr} user={cr.user} style={style} points={cr.points}></PlayerCard>
+         <PlayerCard link={Link} winner={winner} cr={cr} user={cr.user} style={style} points={cr.points} playercount={playercount}></PlayerCard>
         );
       }
     const renderPlayer = () => {
@@ -110,7 +110,7 @@ export default function Challenge(props) {
                                 <div key={i} className={`versus-entry ${ latest.length === 1 ? 'lb' : ''}`}>
                                     {/* <span className={`winner ${showWinner(c)}`}>Winner!</span> */}
                                     <div className='defending'>{playerCard(c.defending, null, c.winner)}</div>
-                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner)}</div>)})[0] : ''}
+                                    {c.challenger ? c.challenger.map((cr,k) => { return (<div key={k} className='challenger'>{playerCard(cr, cardOffset(k), c.winner, c.challenger.length)}</div>)})[0] : ''}
                                     <div className="points challenge-points" >{format(c.score, ' ')}</div>
                                     <Link to={`/challenges/${c._id}`}><div className={`versus${latest.length === 1 ? ' disabled-link' : '' }`}>Vs</div></Link>  
                                     <div className='challenge-style'>{c.defending.genre === 'Normal' ? 'Personal' : c.defending.genre}</div>

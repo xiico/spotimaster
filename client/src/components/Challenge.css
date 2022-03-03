@@ -161,3 +161,19 @@
 .disabled-link {
     pointer-events: none;
 }
+.player-count {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    padding: 5px;
+    background: #ff2828;
+    color: #fff;
+    text-align: center;
+    font: 14px Arial, sans-serif;
+    right: 14px;
+    top: 15px;
+    font-weight: bold;
+    position: absolute;
+    z-index: 10;
+    padding-top: 4px;
+}
