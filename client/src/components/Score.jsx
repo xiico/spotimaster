@@ -21,11 +21,16 @@ export default function Score(props) {
                 <div className="score hits">
                     <p className="old">{props.hits} of {props.total} Tracks - {`Max combo: ${props.maxcombo}`}</p>
                 </div>
-                {!props.challenge ?                
+                {
+                !props.challenge 
+                ?                
                 <div className="score again">
                     {/* <span>▶</span> */}
                     <span onClick={props.onClick}>▶ Play Again</span>
-                </div> : <PlayerCard run={run} winner={winner()._id} score={true} cr={challenge} user={leaderboard ? winner() : null} points={challenge.points}></PlayerCard>}
+                </div> 
+                : 
+                ''/*<PlayerCard run={run} winner={winner()._id} score={true} cr={challenge} user={leaderboard ? winner() : null} points={challenge.points}></PlayerCard>*/
+                }
             </div>
         </div>
     );

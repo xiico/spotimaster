@@ -28,7 +28,10 @@ module.exports = (app) => {
                     });   
                     let challenge = await Challenge.findById(req.query.challenge);
                     challenge.challenger.push(leaderboardEntry._id);
-                    challenge.save();
+                    await challenge.save();
+                    leaderboardEntry = await Leaderboard.findById(leaderboardEntry).populate({ path: 'user', model: User }).catch(error => {
+                        return res.status(500).send(error);
+                    });  
                 } else {
                     leaderboardEntry = await Leaderboard.findById(req.query.leaderboard).populate({ path: 'user', model: User }).catch(error => {
                         return res.status(500).send(error);

@@ -166,7 +166,7 @@ export default function Player(props) {
       setanswears([...answears, getSimpleTrack(song)])
       let p = await spotifyService.play(device, song, 0, usepreview, preview);
       setpreview(p);
-      setseed(song);
+      // setseed(song);
       setcurtrack(recommendations.song);   
       setliked(recommendations.tracks.find(t => recommendations.song).liked);   
     }
@@ -234,7 +234,7 @@ export default function Player(props) {
     }
   }
   const checkAnswer = async (track) => {
-    next.current.reset();
+    if (next.current) next.current.reset();
     setliked(false);
     let ccombo = combo; // current combo;
     let ccorrect = correct;
@@ -304,34 +304,36 @@ export default function Player(props) {
     );
   }
   const start = async () => {
-    if (preview) {      
-      var playPromise = preview.play();;
+    // if (!props.run) {
+      if (preview) {      
+        var playPromise = preview.play();;
 
-      // In browsers that don’t yet support this functionality,
-      // playPromise won’t be defined.
-      if (playPromise !== undefined) {
-        playPromise.then(function() {
-          log('playback started.');
-        }).catch(function(error) {
-          log('playback eror.', error);
-        });
+        // In browsers that don’t yet support this functionality,
+        // playPromise won’t be defined.
+        if (playPromise !== undefined) {
+          playPromise.then(function() {
+            log('playback started.');
+          }).catch(function(error) {
+            log('playback eror.', error);
+          });
+        }
       }
-    }
-    let g;
-    if (select.current) {
-      log("genre: ", select.current.getValue());
-      g = select.current.getValue();
-      setgenre(g);
-    }
-    let trks = await spotifyService.tracks(g);
-    if (!trks.items) trks.items = trks.tracks;
-    while (trks.items.length < 20) {
-      shuffleArray(trks.items);
-      let recommendations = await getRecommendations(trks.items[0].id, null, 25);
-      if (!recommendations) continue;
-      trks.items = trks.items.concat(recommendations.tracks);
-    }
-    createTrackList(trks, g);
+      let g;
+      if (select.current) {
+        log("genre: ", select.current.getValue());
+        g = select.current.getValue();
+        setgenre(g);
+      }
+      let trks = await spotifyService.tracks(g);
+      if (!trks.items) trks.items = trks.tracks;
+      while (trks.items.length < 20) {
+        shuffleArray(trks.items);
+        let recommendations = await getRecommendations(trks.items[0].id, null, 25);
+        if (!recommendations) continue;
+        trks.items = trks.items.concat(recommendations.tracks);
+      }
+      createTrackList(trks, g);
+    // }
     // if(!canplay) playTrack(tracklist.shift());
     setcorrect(0);
     if (started) playTrack(tracklist.shift());
@@ -378,7 +380,7 @@ export default function Player(props) {
           </div>
         </div>
       )}
-      {(seed ? (
+      {(seed || props.run ? (
         <div className="score_info" >
           {<Score challenge={props.challenge} leaderboard={leaderboard} run={props.run} showscore={showscore} score={score} hits={correct} total={plsize} onClick={() => start()} maxcombo={maxcombo} ></Score>}
           <div className='player-buttons'>
