@@ -116,6 +116,11 @@
     align-items: center;
   }
 
+  .abandon {
+    display: block;
+    margin: auto;
+  }
+
   @media all and (max-width: 1520px) {
     .cards_list {
       width: 80%;

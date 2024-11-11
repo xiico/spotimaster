@@ -73,6 +73,76 @@ module.exports = (app) => {
         }
         return res.status(200).send(leaderboardEntry);
     });
+
+    // Example route handlers:
+    app.delete('/api/leaderboard/:id', async (req, res) => {
+        try {
+            const deletedEntry = await deleteLeaderboardEntry(req.params.id);
+            res.json(deletedEntry);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    });
+    
+    // Delete a single leaderboard entry by ID
+    async function deleteLeaderboardEntry(id) {
+        try {
+            const deletedEntry = await Leaderboard.findByIdAndDelete(id);
+            if (!deletedEntry) {
+                throw new Error('Leaderboard entry not found');
+            }
+            
+            // Also delete associated challenges
+            await Challenge.deleteMany({ defending: id });
+            return deletedEntry;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Delete a single challenge by ID
+    async function deleteChallenge(id) {
+        try {
+            const deletedChallenge = await Challenge.findByIdAndDelete(id);
+            if (!deletedChallenge) {
+                throw new Error('Challenge not found');
+            }
+            return deletedChallenge;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    app.delete('/api/challenge/:id', async (req, res) => {
+        try {
+            const deletedChallenge = await deleteChallenge(req.params.id);
+            res.json(deletedChallenge);
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    });
+
+    // Delete multiple entries (optional utility functions)
+    async function deleteLeaderboardEntries(criteria) {
+        try {
+            const result = await Leaderboard.deleteMany(criteria);
+            // Delete associated challenges
+            if (result.deletedCount > 0) {
+                await Challenge.deleteMany({ defending: { $in: result.deletedIds } });
+            }
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async function deleteChallenges(criteria) {
+        try {
+            return await Challenge.deleteMany(criteria);
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 function setValues(run, data) {

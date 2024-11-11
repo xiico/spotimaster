@@ -43,6 +43,7 @@ export default function Player(props) {
   const [liked, setliked] = useState(false);
   const [showlike, setshowlike] = useState(false);
   const [savetracks, setsavetracks] = useState(false);
+  const [confirmingAbandon, setConfirmingAbandon] = useState(false);
   // const [challenge, setchallenge] = useState();
   // const [preview, setpreview] = useState(false);
   const next = useRef();
@@ -171,9 +172,12 @@ export default function Player(props) {
       setliked(recommendations.tracks.find(t => recommendations.song).liked);   
     }
     
-      setTimeout(() => {try {next.current.start()} catch {}}, 300);      
+    setTimeout(() => {try {next.current.start()} catch {}}, 300);      
     
     setshowlike(false);
+  }
+  const challengeSeed = () => {
+
   }
   const checkSaved = async (recommendations) => {
     let saved = await spotifyService.checksaved(recommendations.tracks.map(t => t.id));
@@ -349,6 +353,23 @@ export default function Player(props) {
       setleaderboard(lboard);
     }
   }
+  const abandon = async () => {
+    next.current.reset();
+    if(preview) preview.pause();
+    setstarted(false);
+    setoptionshistory([]);
+    settracklist(null);
+    setpreview(null);
+    setcanplay(true);
+    setConfirmingAbandon(false);
+  }
+  const handleAbandonClick = () => {
+    setConfirmingAbandon(true); // Show confirm/cancel buttons
+  };
+
+  const handleCancel = () => {
+    setConfirmingAbandon(false); // Hide confirm/cancel buttons
+  };
   const getGenres = async () => {
     let res = await spotifyService.genres();
     log("genres: ", res);
@@ -387,11 +408,27 @@ export default function Player(props) {
             <Next hide={!(tracklist || {}).length} setshowlike={setshowlike} running={running} setrunning={setrunning} started={started} ref={next} onClick={() => { if (tracklist.length) playTrack(tracklist.shift()) }} ></Next>
             <Like hidden={!showlike} liked={liked} ref={like} onClick={(p) => { toggleliked(curtrack) }} ></Like>
           </div>
-          {(started && !props.run ? <Card  seed={seed}
-                  artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
-                  image={seed.album ? seed.album.images.find(a => a.width === 300).url : seed.image} 
-                  track={seed.name || seed.track} genre={genre}
-                ></Card> : "")}
+          {(started && !props.run ? 
+            <div className='bob'>
+              <Card  seed={seed}
+                artist={seed.artists ? seed.artists.map(e => ` ${e.name}`).toString().trimStart() : seed.artist}
+                image={seed.album ? seed.album.images.find(a => a.width === 300).url : seed.image} 
+                track={seed.name || seed.track} genre={genre}
+              ></Card>
+              {confirmingAbandon ? (
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '100px' }}>
+                  <button className="confirm" onClick={abandon}>Confirm</button>
+                  <button className="cancel" onClick={handleCancel}>Cancel</button>
+                </div>
+              ) : (
+                <button
+                  className={`abandon ${!(tracklist || {}).length ? 'hidden' : ''}`}
+                  onClick={handleAbandonClick}
+                >
+                  Abandon
+                </button>
+              )}
+            </div> : "")}         
         </div>
       ) : <div className="score_info"></div>)}
     </div>
